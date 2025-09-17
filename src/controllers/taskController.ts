@@ -1,5 +1,5 @@
 
-import { taskTable, userTable } from '../db/sqlite'
+import { taskTable, userTable } from '../db/sqlite3/db'
 
 import { Request, Response } from "express"
 import { SqliteError } from "better-sqlite3";

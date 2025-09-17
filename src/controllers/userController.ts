@@ -1,5 +1,5 @@
 
-import { userTable } from '../db/sqlite'
+import { userTable } from '../db/sqlite3/db'
 import { SqliteError } from "better-sqlite3";
 
 

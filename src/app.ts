@@ -4,16 +4,14 @@ import express from 'express';
 //import { registerUser, validateUserRegister, listUsers } from './routes/userRoutes'
 import userRoutes from './routes/userRoutes'
 import taskRoutes from './routes/taskRoutes'
-import { userTable } from './db/sqlite'
-import { taskTable } from './db/sqlite'
+import { userTable, taskTable, rewardTable } from './db/sqlite3/db'
 import { User } from './models/userModel'
 
 import session from 'express-session'
 
 userTable.migrate();
 taskTable.migrate();
-
-
+rewardTable.migrate();
 
 // Initialize the express engine
 const app: express.Application = express();

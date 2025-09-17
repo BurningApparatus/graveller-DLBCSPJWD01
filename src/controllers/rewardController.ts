@@ -1,6 +1,6 @@
 
 
-import { rewardTable, userTable } from '../db/sqlite'
+import { rewardTable, userTable } from '../db/sqlite3/db'
 
 import { Request, Response } from "express"
 import { SqliteError } from "better-sqlite3";
