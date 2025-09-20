@@ -103,7 +103,7 @@ export class SQLiteRewardTable implements RewardTable {
 
     updateReward(id: number, newReward: Reward): void {
         let statement = this.db.prepare(`
-            UPDATE tasks SET userID = ?, name = ?, description = ?, completions = ?, value = ? WHERE rewardID = ?`
+            UPDATE rewards SET userID = ?, name = ?, description = ?, completions = ?, value = ? WHERE rewardID = ?`
         );
         let info = statement.run(
             newReward.userID, 

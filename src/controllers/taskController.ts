@@ -85,7 +85,7 @@ export async function newTask(req: Request, res: Response) {
             value: value,
             completed: false,
         });
-        res.json({ message: "Task added", task: {
+        res.json({ success: true, message: "Task added", task: {
             name: name,
             description: description,
             due: new Date(due),
@@ -148,7 +148,7 @@ export async function completeTask(req: Request, res: Response) {
             old_task.completed = true;
             taskTable.updateTask(taskID, old_task);
 
-            return res.status(200).json({ message: "Task updated successfully.", old_task });
+            return res.status(200).json({ message: "Task updated successfully.", task: old_task });
         }
         else {
             return res.status(404).json({ error: `Task ${taskID} not found for user` });
@@ -192,7 +192,7 @@ export async function uncompleteTask(req: Request, res: Response) {
             }
             old_task.completed = false;
             taskTable.updateTask(taskID, old_task);
-            return res.status(200).json({ message: "Task updated successfully.", old_task });
+            return res.status(200).json({ message: "Task updated successfully.", task: old_task });
         }
         else {
             return res.status(404).json({ error: `Task ${taskID} not found for user` });

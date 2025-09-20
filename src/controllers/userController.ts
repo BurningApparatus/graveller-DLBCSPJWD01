@@ -30,15 +30,22 @@ export async function registerUser(req: Request, res: Response) {
     try {
         let hash = await bcrypt.hash(password, saltRounds);
         let newUser = await userTable.createUser(username, hash);
-        res.json({ message: "User registered!", user: newUser });
+
+
+        req.session.user = newUser;
+
+        req.session.save(err => {
+            if (err) console.error(err)
+            res.json({ success: true, message: "User registered!", user: newUser });
+        })
     }
     catch (err){
         if (err instanceof SqliteError) {
             if (err.code == "SQLITE_CONSTRAINT_UNIQUE") {
-                return res.status(400).json({ error: "Username already exists" });
+                res.json({ success: false, message: "User already exists. Please log in!"});
             }
             else {
-                return res.status(400).json({ error: `Database error ${err.code}: ${err.message}` });
+                return res.status(500).json({ error: `Database error ${err.code}: ${err.message}` });
 
             }
         }
@@ -62,19 +69,41 @@ export async function loginUser(req: Request, res: Response) {
 
             req.session.save(err => {
                 if (err) console.error(err)
-                res.json({ message: "you logged in lmao"});
+                res.json({ success: true, message: "you logged in lmao"});
             })
         }
         else {
-            res.json({ message: "Incorrect password for user"});
+            res.json({ success: false, message: "Incorrect password for user"});
         }
     }
     else { 
-        return res.status(400).json({ error: `User doesn't exist! Try registering first` });
+        //return res.status(400).json({ error: `User doesn't exist! Try registering first` });
+        res.json({ success: false, message: "User Doesn't exist"});
     }
 
 }
 
+
+export async function deleteUser(req: Request, res: Response) {
+
+    let user = req.session.user;
+
+    console.log(req.session);
+    if (user) {
+
+        userTable.deleteUser(user.userID);
+        req.session.destroy((err) => {
+            if (err) return res.status(500).send("Error logging out.");
+            res.clearCookie("connect.sid"); 
+            res.json({ message: "User deleted successfully"});
+        });
+    }
+    else {
+        return res.status(400).json({ error: `You are not logged in.` });
+
+    }
+
+}
 
 export async function logoutUser(req: Request, res: Response) {
     req.session.destroy((err) => {
@@ -88,9 +117,16 @@ export async function getUserInfo(req: Request, res: Response) {
     let user = req.session.user;
 
 
-    console.log(req.session);
+    //console.log(req.session);
     if (user) {
-        res.json({ username: user.name, balance: user.balance });
+        let out = await userTable.getByID(user.userID);
+        if (out) {
+            res.json({ username: out.name, balance: out.balance });
+        }
+        else {
+            return res.status(400).json({ error: `An error occurred. Please log in again.` });
+        }
+
     }
     else {
         return res.status(400).json({ error: `You are not logged in.` });

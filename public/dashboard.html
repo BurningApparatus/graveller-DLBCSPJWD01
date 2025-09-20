@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <title> Graveller </title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="description" content="" />
+        <link rel="icon" href="favicon.png">
+        <link rel="stylesheet" href="/css/dashboard.css">
+    </head>
+    <body>
+        <main>
+            <section class="heading rounded">
+                <h1 id="greeting"> Greetings, </h1>
+                <p id="balance"> $10 </p>
+                <button class="dot-button" id="account-popup-button" onclick="open_account_popup()"> Account </button>
+
+            </section>
+
+
+            
+            <section class="content-primary">
+                <article class="task-preview rounded">
+                    <h2> Tasks </h2>
+                    <ul id="tasklist" class="button-list"> </ul>
+                    <p id="taskerror"></p>
+                    <button id="task-popup-button" class="new-task-button dot-button" onclick="open_popup()"> + </button>
+                </article>
+
+                <article class="non-tasks">
+                    <div class="stats rounded">
+                        <h2> Stats </h2>
+                        <p> Current Streak: 10 days </p>
+                    </div>
+                    <div class="rewards rounded">
+                        <h2> Rewards </h2>
+                        <ul id="rewardlist" class="button-list"></ul>
+                    </div>
+
+                </article>
+
+            </section>
+
+            <!--
+            <section class="footer">
+            </section>
+            -->
+            </main>
+
+        <div class="popup" id="task-popup">
+                <form id="taskForm" class="rounded">
+                    <label for="taskname"></label>
+                    <input class="textinput" type="text" id="taskname" name="taskname" placeholder="Task title..."><br><br>
+
+                    <label  for="taskdesc"></label>
+                    <textarea class="textinput" type="text" id="taskdesc" name="taskdesc" rows=4 placeholder="Task description..."> </textarea><br><br>
+
+                    <label for="taskvalue">$</label>
+                    <input class="textinput" type="text" inputmode="numeric" id="taskvalue" name="taskvalue"><br><br>
+
+                    <label for="taskdue">Due:</label>
+                    <input type="date" id="taskdue" name="taskdue"><br><br>
+
+                    <button type="submit" class="dot-button">Create</button>
+                </form>
+        </div>
+        <div class="popup" id="account-popup">
+            <div id="account-display" class="rounded">
+                <p id="account-name"> User: username </p>
+                <p id="account-balance"> Balance: Balance </p>
+
+                <button id="logout-button" class="dot-button" onclick="performLogout()"> Logout </button> <br>
+                <button id="delete-button" class="dot-button" onclick="performDeletion()"> Delete my account </button>
+            </div>
+        </div>
+    </body>
+    
+    <script src="/js/dashboard.js"> </script>
+    <script src="/js/taskPreview.js"> </script>
+    <script src="/js/rewardPreview.js"> </script>
+</html>
+

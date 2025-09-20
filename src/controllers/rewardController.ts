@@ -29,16 +29,16 @@ export function validateUpdateReward(req: Request, res: Response, next: Function
     if (req.body == undefined) {
         return res.status(400).json({ error: "no JSON body given" });
     }
-    const { name, description, value, completed } = req.body;
+    const { name, description, value, completions } = req.body;
 
 
     if (
         typeof name !== "string" || 
         typeof description !== "string" ||
         typeof value !== "number" ||
-        typeof completed !== "boolean"
+        typeof completions !== "number"
     ) {
-        return res.status(400).json({ error: "invalid types for task update" });
+        return res.status(400).json({ error: "invalid types for reward update" });
     }
 
     next();

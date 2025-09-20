@@ -1,13 +1,15 @@
 
-import { registerUser, validateUserRegister, listUsers, loginUser, logoutUser, getUserInfo } from '../controllers/userController'
+import { registerUser, validateUserRegister, listUsers, loginUser, logoutUser, getUserInfo, deleteUser} from '../controllers/userController'
+import { requireAuth } from '../controllers/taskController'
 import { Router } from 'express'
 
 const router = Router();
 
 router.post('/register', validateUserRegister, registerUser);
 router.post('/login', validateUserRegister, loginUser);
-router.get('/logout', logoutUser);
-//router.get('/info', getUserInfo);
+router.post('/logout', logoutUser);
+router.delete('/info', deleteUser);
+router.get('/info', requireAuth, getUserInfo);
 //router.get('/list', listUsers);
 
 export default router;
