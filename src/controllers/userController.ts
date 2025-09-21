@@ -1,5 +1,5 @@
 
-import { userTable } from '../db/sqlite3/db'
+import { userTable, transactionTable } from '../db/sqlite3/db'
 import { SqliteError } from "better-sqlite3";
 
 
@@ -163,6 +163,51 @@ export async function getUserInfo(req: Request, res: Response) {
 
 }
 
+/**
+ * GET request for getting a user's activity for the past 7 days
+ */
+export async function getUserStats(req: Request, res: Response) {
+    // get user ID from session
+    let user = req.session.user;
+
+    if (user) {
+        // We get the information from the table
+        let out = await userTable.getByID(user.userID);
+        // If the user exists, return relevant information
+        if (out) {
+            //res.json({ username: out.name, balance: out.balance });
+            // we get them stats
+            let one_week = 7 * 24 * 60 * 60 * 1000;
+            try {
+                let stats = await transactionTable.getUserTransactionSummary(
+                    user.userID, 
+                    new Date( Date.now() - one_week)
+                );
+                res.json(stats);
+            }
+            catch (err) {
+                if (err instanceof SqliteError) {
+                    return res.status(500).json({ 
+                        error: `Database error ${err.code}: ${err.message}` }
+                    );
+                }
+                console.log(err);
+                return res.status(500).json({ 
+                    error: `Internal Server error` }
+                );
+            }
+        }
+        else {
+            return res.status(500).json({ error: `An error occurred. Please log in again.` });
+        }
+
+    }
+    else {
+        return res.status(400).json({ error: `You are not logged in.` });
+
+    }
+
+}
 // This is a debugging function AND SHOULD NOT BE USED
 export async function listUsers(_req: Request, res: Response) { 
     res.json(await userTable.getAll());

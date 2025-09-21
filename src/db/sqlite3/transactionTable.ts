@@ -1,0 +1,200 @@
+
+import { Transaction, TransactionSummary } from '../../models/transactionModel'
+import { TransactionTable } from '../../repositories/transactionTable'
+import { Database } from 'better-sqlite3'
+
+/**
+ * Safely Converts an row with any type into a type that typescript understands.
+ * 
+ * @returns A Transaction Object if the row is well formed, and null otherwise.
+ */
+function toTransactionChecked(row: any): Transaction | null {
+
+    // Check if the row is not undefined/null
+    if (!row) {
+        return null;
+    }
+    // We check if all row attributes exist and are of the right type
+    if (typeof row.transactionID == 'number' && 
+        typeof row.userID == 'number' && 
+        typeof row.amount == 'string' &&
+        typeof row.date == 'number'
+    ) {
+        return {
+            transactionID: row.transactionID,
+            userID: row.userID,
+            amount: row.amount,
+            date: new Date(row.date),
+        }
+        
+    }
+    else {
+        return null;
+    }
+}
+
+/**
+ * Class which represents an interface for the Reward table for SQLite.
+ * implements the TaskTable interface defined in /repositories/taskTable.ts
+ */
+export class SQLiteTransactionTable implements TransactionTable {
+    private db: Database;
+    
+    constructor(db: Database) {
+        this.db = db;
+    }
+
+    /**
+     * Create the table if it doesn't already exist
+     */
+    migrate(): void {
+
+        // NOTE: SQLite doesn't have types for datetime (https://sqlite.org/datatype3.html)
+        // date is a datetime type, represented in UNIX time by an integer
+        let statement = this.db.prepare(`
+            CREATE TABLE IF NOT EXISTS transactions(
+                transactionID INTEGER PRIMARY KEY AUTOINCREMENT,
+                userID INTEGER NOT NULL,
+                amount INTEGER NOT NULL,
+                date INTEGER NOT NULL,
+                FOREIGN KEY (userID)
+                REFERENCES users (userID)
+            );`
+        );
+        statement.run();
+    }    
+
+    async createTransaction(transaction: Transaction): Promise<Transaction> {
+        console.log(transaction);
+
+
+
+        let statement = this.db.prepare(`INSERT INTO transactions(userID, amount, date) values(?,?,?)`);
+
+        // For convinience, we restrict the date to only include days, no 
+        // time
+        let stripped_date = new Date(
+           transaction.date.getFullYear(),
+           transaction.date.getMonth(), 
+           transaction.date.getDate() - 2, 
+        )
+        // insert relevant properites into a record in the table
+        let info = statement.run(
+            transaction.userID, 
+            transaction.amount, 
+            stripped_date.getTime(),
+        );
+
+        console.log(info);
+
+
+        let rowID = info.lastInsertRowid;
+
+        let newTransaction = transaction;
+        newTransaction.transactionID = rowID as number;
+
+        return newTransaction;
+
+    }
+
+    async getByID(id: number): Promise<Transaction | null> {
+        let statement = this.db.prepare(`SELECT * from transactions WHERE transactionID = ?`);
+
+        // return a task via the toTransactionChecked function. If the task doesn't exist
+        // or is malformed a null is returned.
+        return toTransactionChecked(statement.get(id));
+
+
+    }
+
+    async getAll(): Promise<Transaction[]> {
+        let statement = this.db.prepare(`SELECT * from transactions`);
+        // the all() method returns an array of records which satisfy the query
+        let res = statement.all();
+        
+        // If no such records are found, return []
+        if (!res) {
+            return [];
+        }
+
+        // Then, we just map each row to a Transaction object
+        return res.map((potential_user: any) => {
+            if (toTransactionChecked(potential_user)) {
+                return potential_user
+            } 
+        })
+
+    }
+
+    async getAllForUser(id: number): Promise<Transaction[]> {
+        let statement = this.db.prepare(`SELECT * from transactions WHERE userID = ?`);
+        // the all() method returns an array of records which satisfy the query
+        let res = statement.all(id);
+        
+        // If no such records are found, return []
+        if (!res) {
+            return [];
+        }
+
+        // Then, we just map each row to a Transaction object
+        return res.map((potential_user: any) => {
+            if (toTransactionChecked(potential_user)) {
+                return potential_user
+            } 
+        })
+    }
+    async getUserTransactionSummary(id: number, date: Date): Promise<TransactionSummary[]> {
+        // Sums and groups transactions by date
+        let statement = this.db.prepare(`SELECT date, SUM(amount) AS total FROM transactions WHERE userID = ? AND date >= ? GROUP BY date ORDER BY date`);
+        // the all() method returns an array of records which satisfy the query
+        let res = statement.all(id, date.getTime());
+        
+        // If no such records are found, return []
+        if (!res) {
+            return [];
+        }
+
+        // Then, we just map each row to a Transaction object
+        return res.map((row: any) => {
+            return {
+                date: new Date(row.date),
+                total: Number(row.total),
+            }
+        })
+    }
+
+
+    updateTransaction(id: number, newTransaction: Transaction): void {
+
+        // update a row in the database from the given data
+        let statement = this.db.prepare(`
+            UPDATE transactions SET userID = ?, amount = ?, date = ? WHERE transactionID = ?`
+        );
+        let info = statement.run(
+            newTransaction.userID, 
+            newTransaction.amount, 
+            newTransaction.date.getTime(), 
+            id
+        );
+
+        if (info.changes == 0) {
+            throw Error("NoRowsUpdated");
+        }
+
+
+    }
+
+    deleteTransaction(id: number): void {
+        // Delete transaction with ID
+        let statement = this.db.prepare(`DELETE FROM transactions WHERE transactionID = ?`);
+        let info = statement.run(id);
+
+        // This should trip if the ID isn't in the database, but should be avoided
+        // by the caller
+        if (info.changes == 0) {
+            throw Error("NoRowsUpdated");
+        }
+
+    } 
+
+}

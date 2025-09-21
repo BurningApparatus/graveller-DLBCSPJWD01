@@ -1,5 +1,5 @@
 
-import { taskTable, userTable } from '../db/sqlite3/db'
+import { taskTable, userTable, transactionTable } from '../db/sqlite3/db'
 
 import { Request, Response } from "express"
 import { SqliteError } from "better-sqlite3";
@@ -191,6 +191,14 @@ export async function completeTask(req: Request, res: Response) {
                 // We add the balance;
                 current_user.balance += old_task.value;
                 userTable.updateUser(userID, current_user);
+                // We add a transaction for the current date
+                transactionTable.createTransaction({
+                    transactionID: -1,
+                    userID: userID,
+                    amount: old_task.value,
+                    date: new Date(),
+                })
+
             }
             // All that's left is to set the completed field and update the database
             old_task.completed = true;
@@ -250,6 +258,14 @@ export async function uncompleteTask(req: Request, res: Response) {
             if (old_task.completed) {
                 current_user.balance -= old_task.value;
                 userTable.updateUser(userID, current_user);
+
+                // We add a transaction for the current date
+                transactionTable.createTransaction({
+                    transactionID: -1,
+                    userID: userID,
+                    amount: -old_task.value,
+                    date: new Date(),
+                })
             }
             old_task.completed = false;
             taskTable.updateTask(taskID, old_task);
@@ -272,6 +288,46 @@ export async function uncompleteTask(req: Request, res: Response) {
 
 }
 
+/**
+ * PUT route for refreshing a task for a user. 
+ * Sets the "completed" field on the task to false.
+ * Has no side effects, unlike uncomplete task, meaning that a user may reuse a task
+ *
+ * Expects valid auth and :id.
+ */
+export async function refreshTask(req: Request, res: Response) {
+
+    // we get the user and task ID
+    let userID = req.session.user?.userID || -1;
+    let taskIDString = req.params.id;
+
+    let taskID = parseInt(taskIDString);
+ 
+    // The try catch is necessary as all database operations may return SQLite errors
+    try {
+        let old_task = await taskTable.getTaskForUser(userID, taskID);
+        if (old_task) {
+
+            old_task.completed = false;
+            taskTable.updateTask(taskID, old_task);
+            return res.status(200).json({ message: "Task updated successfully.", task: old_task });
+        }
+        else {
+            return res.status(404).json({ error: `Task ${taskID} not found for user` });
+        }
+    }
+    catch (err){
+        if (err instanceof SqliteError) {
+            return res.status(500).json({ 
+                error: `Database error ${err.code}: ${err.message}`
+            }); 
+        }
+        return res.status(500).json({ 
+            error: `Internal Server error`
+        }); 
+    }
+
+}
 /**
  * PUT route for updating the contents of a task. Assumes valid auth, :id, and JSON contents
  * given by requireAuth, validateID, and validateTaskUpdate

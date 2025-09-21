@@ -2,7 +2,7 @@
  * Defines the routes for the path /api/v1/auth
  */
 
-import { registerUser, validateUserRegister, listUsers, loginUser, logoutUser, getUserInfo, deleteUser} from '../controllers/userController'
+import { registerUser, validateUserRegister, loginUser, logoutUser, getUserInfo, deleteUser, getUserStats} from '../controllers/userController'
 import { requireAuth } from '../controllers/taskController'
 import { Router } from 'express'
 
@@ -13,6 +13,7 @@ router.post('/login', validateUserRegister, loginUser);
 router.post('/logout', logoutUser);
 router.delete('/info', deleteUser);
 router.get('/info', requireAuth, getUserInfo);
+router.get('/stats', requireAuth, getUserStats);
 //router.get('/list', listUsers);
 
 export default router;

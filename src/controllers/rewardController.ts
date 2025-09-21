@@ -1,6 +1,6 @@
 
 
-import { rewardTable, userTable } from '../db/sqlite3/db'
+import { rewardTable, userTable, transactionTable } from '../db/sqlite3/db'
 
 import { Request, Response } from "express"
 import { SqliteError } from "better-sqlite3";
@@ -183,6 +183,14 @@ export async function completeReward(req: Request, res: Response) {
             // We change the user and reward records
             current_user.balance -= old_reward.value;
             userTable.updateUser(userID, current_user);
+
+            // We add a transaction for the current date
+            transactionTable.createTransaction({
+                transactionID: -1,
+                userID: userID,
+                amount: -old_reward.value,
+                date: new Date(),
+            })
             old_reward.completions++;
             rewardTable.updateReward(rewardID, old_reward);
 

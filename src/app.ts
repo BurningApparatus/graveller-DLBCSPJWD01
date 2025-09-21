@@ -5,7 +5,7 @@ import express from 'express';
 import userRoutes from './routes/userRoutes'
 import taskRoutes from './routes/taskRoutes'
 import rewardRoutes from './routes/rewardRoutes'
-import { userTable, taskTable, rewardTable } from './db/sqlite3/db'
+import { userTable, taskTable, rewardTable, transactionTable } from './db/sqlite3/db'
 import { User } from './models/userModel'
 
 import session from 'express-session'
@@ -15,6 +15,7 @@ import path from 'path'
 userTable.migrate();
 taskTable.migrate();
 rewardTable.migrate();
+transactionTable.migrate();
 
 // Initialize the express engine
 const app: express.Application = express();
