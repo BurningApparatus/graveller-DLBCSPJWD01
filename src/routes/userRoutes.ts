@@ -1,3 +1,6 @@
+/**
+ * Defines the routes for the path /api/v1/auth
+ */
 
 import { registerUser, validateUserRegister, listUsers, loginUser, logoutUser, getUserInfo, deleteUser} from '../controllers/userController'
 import { requireAuth } from '../controllers/taskController'

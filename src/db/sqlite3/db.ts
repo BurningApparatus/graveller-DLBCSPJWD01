@@ -1,3 +1,13 @@
+/**
+ * @packageDocumentation
+ * This file exists as the delcaration of global variables which handle the I/O operations 
+ * for each table individually. Files are expected to import each relevant global variable
+ * for their specified requirements.
+ *
+ *
+ * Each table follows the interface details described in /repositories for the sqlite 
+ * database.
+ */
 
 import DatabaseConstructor, {Database} from "better-sqlite3";
 
@@ -5,7 +15,7 @@ import { SQLiteUserTable } from "./userTable"
 import { SQLiteTaskTable } from "./taskTable"
 import { SQLiteRewardTable } from "./rewardTable"
 
-
+// Create the one database connection which is used by all tables.
 export const db = new DatabaseConstructor('./graveller.db', { verbose: console.log });
 
 

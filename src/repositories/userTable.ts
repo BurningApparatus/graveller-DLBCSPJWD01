@@ -1,6 +1,8 @@
 
-import { User, UserRegister } from '../models/userModel'
-
+import { User } from '../models/userModel'
+/**
+ * Interface for interacting with the User Table in the database.
+ */
 export interface UserTable {
     
     /**

@@ -2,6 +2,9 @@
 import { Task } from '../models/taskModel'
 
 
+/**
+ * Interface for interacting with the Task Table in the database.
+ */
 export interface TaskTable {
     
     /**

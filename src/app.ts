@@ -2,7 +2,6 @@
 import express from 'express';
 
 
-//import { registerUser, validateUserRegister, listUsers } from './routes/userRoutes'
 import userRoutes from './routes/userRoutes'
 import taskRoutes from './routes/taskRoutes'
 import rewardRoutes from './routes/rewardRoutes'
@@ -12,6 +11,7 @@ import { User } from './models/userModel'
 import session from 'express-session'
 import path from 'path'
 
+// Initialize database tables if they don't already exist
 userTable.migrate();
 taskTable.migrate();
 rewardTable.migrate();
@@ -26,19 +26,17 @@ app.use(session({
   saveUninitialized: true
 }));
 
+// Tell 'express-session' to store user data in the cookie itself
 declare module "express-session" {
   interface SessionData {
     user: User;
   }
 }
-app.use(express.static(path.join(__dirname, "../public")));
-// Handling '/' Request
-app.get('/', (_req, res) => {
-    res.send("root directory xd");
-});
 
-//app.post('/api/register', validateUserRegister, registerUser );
-//app.get('/api/users', listUsers);
+// Serve frontend pages statically
+app.use(express.static(path.join(__dirname, "../public")));
+
+// Use all routers
 app.use('/api/v1/auth', userRoutes);
 app.use('/api/v1/tasks', taskRoutes);
 app.use('/api/v1/rewards', rewardRoutes);

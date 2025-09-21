@@ -1,3 +1,6 @@
+/**
+ * Defines the routes for the path /api/v1/tasks
+ */
 
 import { Router } from 'express'
 import { validateNewTask, newTask, getTasks, getTaskByID, requireAuth, validateID, completeTask, uncompleteTask, updateTask, validateTaskUpdate, deleteTask } from '../controllers/taskController'

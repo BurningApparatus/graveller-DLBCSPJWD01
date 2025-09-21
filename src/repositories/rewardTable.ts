@@ -1,6 +1,9 @@
 import { Reward } from '../models/rewardModel'
 
 
+/**
+ * Interface for interacting with the Reward Table in the database.
+ */
 export interface RewardTable {
     
     /**

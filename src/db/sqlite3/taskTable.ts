@@ -2,11 +2,18 @@ import { Task } from '../../models/taskModel'
 import { TaskTable } from '../../repositories/taskTable'
 import { Database } from 'better-sqlite3'
 
+/**
+ * Safely Converts an row with any type into a type that typescript understands.
+ * 
+ * @returns A Task Object if the row is well formed, and null otherwise.
+ */
 function toTaskChecked(row: any): Task | null {
 
+    // Check if the row is not undefined/null
     if (!row) {
         return null;
     }
+    // We check if all row attributes exist and are of the right type
     if (typeof row.taskID == 'number' && 
         typeof row.userID == 'number' && 
         typeof row.name == 'string' && 
@@ -30,6 +37,10 @@ function toTaskChecked(row: any): Task | null {
     }
 }
 
+/**
+ * Class which represents an interface for the Task table for SQLite.
+ * implements the TaskTable interface defined in /repositories/taskTable.ts
+ */
 export class SQLiteTaskTable implements TaskTable {
     private db: Database;
     
@@ -37,6 +48,9 @@ export class SQLiteTaskTable implements TaskTable {
         this.db = db;
     }
 
+    /**
+     * Create the table if it doesn't already exist
+     */
     migrate(): void {
 
         // NOTE: SQLite doesn't have types for boolean or datetime (https://sqlite.org/datatype3.html)
@@ -61,8 +75,11 @@ export class SQLiteTaskTable implements TaskTable {
     async createTask(task: Task): Promise<Task> {
         console.log(task);
 
+
+
         let statement = this.db.prepare(`INSERT INTO tasks(userID, name, description, completed, due, value) values(?,?,?,?,?,?)`);
 
+        // insert relevant properites into a record in the table
         let info = statement.run(task.userID, 
             task.name, 
             task.description, 
@@ -77,7 +94,6 @@ export class SQLiteTaskTable implements TaskTable {
         let rowID = info.lastInsertRowid;
 
         let newTask = task;
-        // dangerous!
         newTask.taskID = rowID as number;
 
         return newTask;
@@ -86,6 +102,9 @@ export class SQLiteTaskTable implements TaskTable {
 
     async getByID(id: number): Promise<Task | null> {
         let statement = this.db.prepare(`SELECT * from tasks WHERE taskID = ?`);
+
+        // return a task via the toTaskChecked function. If the task doesn't exist
+        // or is malformed a null is returned.
         return toTaskChecked(statement.get(id));
 
 
@@ -93,11 +112,15 @@ export class SQLiteTaskTable implements TaskTable {
 
     async getAll(): Promise<Task[]> {
         let statement = this.db.prepare(`SELECT * from tasks`);
+        // the all() method returns an array of records which satisfy the query
         let res = statement.all();
-
+        
+        // If no such records are found, return []
         if (!res) {
             return [];
         }
+
+        // Then, we just map each row to a Task object
         return res.map((potential_user: any) => {
             if (toTaskChecked(potential_user)) {
                 return potential_user
@@ -112,6 +135,8 @@ export class SQLiteTaskTable implements TaskTable {
     }
 
     updateTask(id: number, newTask: Task): void {
+
+        // update a row in the database from the given data
         let statement = this.db.prepare(`
             UPDATE tasks SET userID = ?, name = ?, description = ?, due = ?, completed = ?, value = ? WHERE taskID = ?`
         );
@@ -133,9 +158,12 @@ export class SQLiteTaskTable implements TaskTable {
     }
 
     deleteTask(id: number): void {
+        // Delete task with ID
         let statement = this.db.prepare(`DELETE FROM tasks WHERE taskID = ?`);
         let info = statement.run(id);
 
+        // This should trip if the ID isn't in the database, but should be avoided
+        // by the caller
         if (info.changes == 0) {
             throw Error("NoRowsUpdated");
         }

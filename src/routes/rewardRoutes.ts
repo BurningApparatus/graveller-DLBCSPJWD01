@@ -1,3 +1,6 @@
+/**
+ * Defines the routes for the path /api/v1/rewards
+ */
 
 import { Router } from 'express'
 import { requireAuth, getRewards, validateNewReward, newReward, validateID, getRewardByID, completeReward, validateUpdateReward, updateReward, deleteReward } from '../controllers/rewardController'
