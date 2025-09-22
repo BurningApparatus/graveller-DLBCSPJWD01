@@ -31,13 +31,29 @@ function createRewardHTML(task) {
     let rewardClickable = tag("button", "task-click", "");
     rewardClickable.classList.add("reward-click");
 
+
+
+    let non_completion_section = tag("div","non-completion", ``);
+
     let title = tag("span","task-title", `${task.name} - $${task.value}`);
-    title.classList.add("reward-text");
     let del = tag("button","task-delete", `X`);
     let description = tag("div", "task-description", task.description);
-    description.classList.add("reward-text");
-    let completions = tag("div", "task-due", task.completions);
-    completions.classList.add("reward-text");
+
+    let completions = tag("div", "reward-completions", task.completions);
+
+    let balElement = document.getElementById("balance");
+    let clientBalance = Number(balElement.textContent.substring(1));
+
+    if (task.value > clientBalance) {
+        rewardClickable.classList.add("reward-expensive")
+        completions.classList.add("reward-text-light");
+    }
+    else {
+        title.classList.add("reward-text");
+        completions.classList.add("reward-text");
+        description.classList.add("reward-text");
+    }
+
 
     rewardClickable.addEventListener("click", async () => {
         await completeReward(task.rewardID);
@@ -56,9 +72,11 @@ function createRewardHTML(task) {
     let br = document.createElement("br");
     //img.alt = "Vector image of trophy";
 
-    rewardClickable.appendChild(img);
-    rewardClickable.appendChild(title);
-    rewardClickable.appendChild(description);
+    non_completion_section.appendChild(img);
+    non_completion_section.appendChild(title);
+    non_completion_section.appendChild(description);
+
+    rewardClickable.appendChild(non_completion_section);
     rewardClickable.appendChild(completions);
     li.appendChild(rewardClickable);
     //li.appendChild(del);
@@ -78,7 +96,7 @@ async function completeReward(id) {
         let balElement = document.getElementById("balance");
 
         console.log(out);
-        let clientBalance = Number(balanceElement.textContent.substring(1));
+        let clientBalance = Number(balElement.textContent.substring(1));
 
         clientBalance -= out.old_reward.value;
 

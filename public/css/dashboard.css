@@ -256,15 +256,27 @@ h1, h2 {
 
 .reward-click {
     background-color: #286983;
-    /*display: inline-block;*/
+    display: flex;
     /*background-color: inherit;*/
     height: 10%;
+}
+.reward-expensive {
+    background-color: #f2e9e1; 
 }
 .reward-click:hover {
     background-color: #907aa9;
 }
+
 .reward-text {
     color: #faf4ed;
+}
+.reward-completions {
+    font-size: 5vh;    
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #faf4edaa;
+}
+.reward-text-light {
+    color: #575279aa;
 }
 .trophy-img {
     width: 5%;
