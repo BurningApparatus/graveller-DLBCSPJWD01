@@ -75,6 +75,7 @@ function createTaskHTML(task) {
 
     let title = tag("span","task-title", `${task.name} - $${task.value}`);
     let del = tag("button","task-delete", `X`);
+    let refresh = tag("button","task-refresh", `3`);
     let description = tag("div", "task-description", task.description);
     let due = tag("div", "task-due", formatter.format(dueDate));
 
@@ -92,6 +93,10 @@ function createTaskHTML(task) {
         await deleteTask(task.taskID);
         hydrateTasks();
     } );
+    refresh.addEventListener("click", async () => {
+        await refreshTask(task.taskID);
+        hydrateTasks();
+    } );
 
     taskClickable.appendChild(title);
     taskClickable.appendChild(description);
@@ -100,6 +105,9 @@ function createTaskHTML(task) {
     }
     li.appendChild(taskClickable);
     li.appendChild(del);
+    if (task.completed) {
+        li.appendChild(refresh);
+    }
 
     return li;
 }
@@ -150,6 +158,19 @@ async function deleteTask(id) {
         alert("Error: " + error.error);
     }
 }
+async function refreshTask(id) { 
+
+    const res = await fetch(`/api/v1/tasks/${id}/refresh`, {
+        method: "PUT",
+        credentials: "include" 
+    });
+
+    if (!res.ok) {
+        const error = await res.json();
+        alert("Error: " + error.error);
+    }
+}
+
 function tag(element, className, content) {
     let e = document.createElement(element);
     e.classList.add(className);

@@ -93,10 +93,10 @@ h1, h2 {
 
 .rewards {
     background-color: #fffaf3;
-    height: 50%;
+    height: 70%;
     width: 100%;
     max-width: 100%;
-    max-height: 50%;
+    max-height: 70%;
     flex: 1 1 auto;
     margin-top: 0.7em;
 }
@@ -113,6 +113,9 @@ h1, h2 {
 }
 .task-delete:hover {
     background-color: #b4637a;
+}
+.task-refresh:hover {
+    background-color: #286983;
 }
 .task-title {
     font-family: Georgia, serif;
@@ -151,6 +154,10 @@ h1, h2 {
 }
 .task-delete {
     background-color: #d7827e; 
+    border: none;
+}
+.task-refresh {
+    background-color: #56949f; 
     border: none;
 
 }
@@ -240,7 +247,7 @@ h1, h2 {
 
 
 #account-display {
-    background-color: #f2e9e1; 
+    backgrou8nd-color: #f2e9e1; 
 
     padding: 1em;
     width: 20vw;
@@ -248,16 +255,16 @@ h1, h2 {
 }
 
 .reward-click {
-    /*background-color: #286983;*/
+    background-color: #286983;
     /*display: inline-block;*/
-    background-color: inherit;
+    /*background-color: inherit;*/
     height: 10%;
 }
 .reward-click:hover {
     background-color: #907aa9;
 }
 .reward-text {
-    /*color: #faf4ed;*/
+    color: #faf4ed;
 }
 .trophy-img {
     width: 5%;
@@ -268,4 +275,31 @@ h1, h2 {
 #rewardlist {
     overflow-y: scroll;
     max-height: 80%;
+}
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    padding: 0em;
+    margin: 0;
+    height: 70%;
+}
+.bar-container {
+    height: 100%;
+
+    margin-left: 1%;
+    text-align: center;
+    display: flex;
+    flex-direction: column-reverse;
+
+}
+
+.bar {
+    background-color: #b4637a;
+
+    width: 100%;
+}
+.bar-highlight {
+    background-color: #286983;
+
 }

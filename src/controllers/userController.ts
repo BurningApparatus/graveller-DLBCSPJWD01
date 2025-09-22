@@ -164,7 +164,7 @@ export async function getUserInfo(req: Request, res: Response) {
 }
 
 /**
- * GET request for getting a user's activity for the past 7 days
+ * GET request for getting a user's activity for the past 14 days
  */
 export async function getUserStats(req: Request, res: Response) {
     // get user ID from session
@@ -181,7 +181,7 @@ export async function getUserStats(req: Request, res: Response) {
             try {
                 let stats = await transactionTable.getUserTransactionSummary(
                     user.userID, 
-                    new Date( Date.now() - one_week)
+                    new Date( Date.now() - one_week*2)
                 );
                 res.json(stats);
             }

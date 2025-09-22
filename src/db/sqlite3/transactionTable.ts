@@ -76,7 +76,7 @@ export class SQLiteTransactionTable implements TransactionTable {
         let stripped_date = new Date(
            transaction.date.getFullYear(),
            transaction.date.getMonth(), 
-           transaction.date.getDate() - 2, 
+           transaction.date.getDate(), 
         )
         // insert relevant properites into a record in the table
         let info = statement.run(
