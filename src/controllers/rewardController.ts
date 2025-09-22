@@ -90,6 +90,11 @@ export async function newReward(req: Request, res: Response) {
     const { name, description, value } = req.body;
     let user = req.session.user;
 
+    if (value < 0) {
+        return res.status(400).json({ error: "Reward value must be non-negative." });
+
+    }
+
     try {
         // We create a new reward with the given parameters from the JSON
         let newReward = await rewardTable.createReward({
@@ -100,7 +105,7 @@ export async function newReward(req: Request, res: Response) {
             value: value,
             completions: 0,
         });
-        res.json({ message: "Reward added", reward: {
+        res.json({ success: true, message: "Reward added", reward: {
             rewardID: newReward.rewardID,
             name: name,
             description: description,
@@ -133,7 +138,7 @@ export async function getRewards(req: Request, res: Response) {
     try {
         let rewards = await rewardTable.getRewardsForUser(user?.userID || -1);
         console.log(rewards);
-        res.json(rewards);
+        res.json({success: "true", rewards: rewards});
     }
     catch (err){
         if (err instanceof SqliteError) {

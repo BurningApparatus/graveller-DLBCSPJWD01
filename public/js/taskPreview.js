@@ -216,7 +216,7 @@ form.addEventListener('submit', async (e) => {
         hydrateTasks();
     }
     else {
-        errorMessage.textContent = result.message || "Failed to Register";
+        errorMessage.textContent = result.message || "Failed to Create Task";
 
     }
 

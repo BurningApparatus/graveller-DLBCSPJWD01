@@ -94,6 +94,10 @@ export async function newTask(req: Request, res: Response) {
     const { name, description, due, value } = req.body;
     let user = req.session.user;
 
+    if (value < 0) {
+        return res.status(400).json({ error: "Value must be non-negative" });
+    }
+
     // The try catch is necessary as all database operations may return SQLite errors
     try {
         // We create a task using the relevant parameters

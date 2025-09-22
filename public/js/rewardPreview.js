@@ -10,9 +10,9 @@ async function hydrateRewards() {
     rewardlist.innerHTML = ""; // clear
     if (response.ok) {
         const rewards = await response.json();
-        //tasks.sort((a, b) => a.completed - b.completed);
+        rewards.rewards.sort((a, b) => a.value - b.value);
 
-        rewards.forEach((reward) => {
+        rewards.rewards.forEach((reward) => {
             //let li = document.createElement("li");
             //li.appendChild(document.createTextNode(task.name));
             rewardlist.appendChild(createRewardHTML(reward));
@@ -79,7 +79,7 @@ function createRewardHTML(task) {
     rewardClickable.appendChild(non_completion_section);
     rewardClickable.appendChild(completions);
     li.appendChild(rewardClickable);
-    //li.appendChild(del);
+    li.appendChild(del);
 
     return li;
 }
@@ -124,4 +124,47 @@ async function deleteReward(id) {
 }
 hydrateRewards();
 
+// Reward creation form
+const rewardform = document.getElementById('rewardForm');
+const rewardErrorMessage = document.getElementById('rewarderror');
 
+rewardform.addEventListener('submit', async (e) => {
+    e.preventDefault(); // stop normal form submission
+    rewardErrorMessage.textContent = ''; // reset error
+
+    const formData = {
+        name: document.getElementById('rewardname').value,
+        description: document.getElementById('rewarddesc').value,
+        value: parseInt(document.getElementById('rewardvalue').value),
+    };
+
+    const response = await fetch('/api/v1/rewards/', {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        rewardErrorMessage.textContent = err.error || "Task Creation failed";
+        return;
+    }
+
+    const result = await response.json();
+    console.log(result);
+
+    if (result.success) {
+        hydrateRewards();
+    }
+    else {
+        rewardErrorMessage.textContent = result.message || "Failed to Create Task";
+
+    }
+
+
+
+    console.log(result);
+});

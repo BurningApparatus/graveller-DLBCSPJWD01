@@ -9,6 +9,9 @@
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="description" content="" />
         <link rel="icon" href="favicon.png">
+        <link rel="stylesheet" href="/css/task.css">
+        <link rel="stylesheet" href="/css/reward.css">
+        <link rel="stylesheet" href="/css/stats.css">
         <link rel="stylesheet" href="/css/dashboard.css">
     </head>
     <body>
@@ -26,7 +29,6 @@
                 <article class="task-preview rounded">
                     <h2> Tasks </h2>
                     <ul id="tasklist" class="button-list"> </ul>
-                    <p id="taskerror"></p>
                     <button id="task-popup-button" class="new-task-button dot-button" onclick="open_popup()"> + </button>
                 </article>
 
@@ -38,6 +40,8 @@
                     <div class="rewards rounded">
                         <h2> Rewards </h2>
                         <ul id="rewardlist" class="button-list"></ul>
+
+                    <button id="reward-popup-button" class="new-task-button dot-button" onclick="open_reward_popup()"> + </button>
                     </div>
 
                 </article>
@@ -53,17 +57,18 @@
         <div class="popup" id="task-popup">
                 <form id="taskForm" class="rounded">
                     <label for="taskname"></label>
-                    <input class="textinput" type="text" id="taskname" name="taskname" placeholder="Task title..."><br><br>
+                    <input required class="textinput title-input" type="text" id="taskname" name="taskname"  placeholder="Task title..."><br><br>
 
                     <label  for="taskdesc"></label>
-                    <textarea class="textinput" type="text" id="taskdesc" name="taskdesc" rows=4 placeholder="Task description..."> </textarea><br><br>
+                    <textarea class="textinput required long-input" type="text" id="taskdesc" name="taskdesc" rows=4 placeholder="Task description..."> </textarea><br><br>
 
                     <label for="taskvalue">$</label>
-                    <input class="textinput" type="text" inputmode="numeric" id="taskvalue" name="taskvalue"><br><br>
+                    <input required class="textinput" type="text" inputmode="numeric" id="taskvalue" name="taskvalue"><br><br>
 
                     <label for="taskdue">Due:</label>
-                    <input type="date" id="taskdue" name="taskdue"><br><br>
+                    <input required type="date" id="taskdue" name="taskdue"><br><br>
 
+                    <p id="taskerror" class="error-message"></p>
                     <button type="submit" class="dot-button">Create</button>
                 </form>
         </div>
@@ -75,6 +80,21 @@
                 <button id="logout-button" class="dot-button" onclick="performLogout()"> Logout </button> <br>
                 <button id="delete-button" class="dot-button" onclick="performDeletion()"> Delete my account </button>
             </div>
+        </div>
+
+        <div class="popup" id="reward-popup">
+                <form id="rewardForm" class="rounded">
+                    <input required class="textinput dark-input title-input" type="text" id="rewardname" name="rewardname" placeholder="Reward title..."><br><br>
+
+                    <textarea class="textinput required dark-input long-input" type="text" id="rewarddesc" name="rewarddesc" rows=4 placeholder="Reward description..."> </textarea><br><br>
+
+                
+                    <label for="rewardvalue">$</label>
+                    <input required class="textinput dark-input" type="text" inputmode="numeric" id="rewardvalue" name="rewardvalue"><br><br>
+
+                    <p id="rewarderror" class="error-message"></p>
+                    <button type="submit" class="dot-button">Create</button>
+                </form>
         </div>
     </body>
     

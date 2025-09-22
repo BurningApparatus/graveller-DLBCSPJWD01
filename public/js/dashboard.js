@@ -4,6 +4,7 @@ const logout = document.getElementById("logout-button");
 const task_popup = document.getElementById("task-popup")
 const popup_button = document.getElementById("task-popup-button");
 const account_popup = document.getElementById("account-popup");
+const reward_popup = document.getElementById("reward-popup");
 const account_popup_button = document.getElementById("account-popup-button");
 const account_name = document.getElementById("account-name");
 const account_balance = document.getElementById("account-balance");
@@ -81,6 +82,9 @@ function open_popup() {
 function open_account_popup() {
     account_popup.style.display = "block";
 }
+function open_reward_popup() {
+    reward_popup.style.display = "block";
+}
 
 window.addEventListener("click", (event) => {
   if (event.target == task_popup) {
@@ -88,5 +92,8 @@ window.addEventListener("click", (event) => {
   }
   if (event.target == account_popup) {
     account_popup.style.display = "none";
+  }
+  if (event.target == reward_popup) {
+    reward_popup.style.display = "none";
   }
 })
