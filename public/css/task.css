@@ -6,18 +6,6 @@
     flex-grow: 2;
 }
 
-.task-preview {
-    background-color: #fffaf3;
-    /*
-    border: solid;
-    border-width: 1px;
-    border-color: #575279;
-    */
-    margin: 0.7em;
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    flex: 1 1 0;
-}
 
 .task-click:hover {
     background-color: #dfdad9;

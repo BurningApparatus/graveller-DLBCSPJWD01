@@ -60,7 +60,13 @@ function createRewardHTML(task) {
         hydrateRewards();
     } );
     del.addEventListener("click", async () => {
-        await deleteReward(task.rewardID);
+        let userConfirm = confirm("Are you sure you want to delete this reward? This action is not reversible.");
+
+        if (userConfirm) {
+
+            await deleteReward(task.rewardID);
+        }
+
         hydrateRewards();
     } );
 

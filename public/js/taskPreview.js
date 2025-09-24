@@ -90,10 +90,17 @@ function createTaskHTML(task) {
         hydrateTasks();
     } );
     del.addEventListener("click", async () => {
-        await deleteTask(task.taskID);
+
+        let userConfirm = confirm("Are you sure you want to delete this task? This action is not reversible.");
+
+        if (userConfirm) {
+
+            await deleteTask(task.taskID);
+        }
         hydrateTasks();
     } );
     refresh.addEventListener("click", async () => {
+
         await refreshTask(task.taskID);
         hydrateTasks();
     } );

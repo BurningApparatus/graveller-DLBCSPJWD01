@@ -19,7 +19,8 @@ function toTaskChecked(row: any): Task | null {
         typeof row.name == 'string' && 
         typeof row.description == 'string' &&
         typeof row.completed == 'number' &&
-        typeof row.value == 'number'
+        typeof row.value == 'number' && 
+        typeof row.deleted == 'number' 
     ) {
         return {
             taskID: row.taskID,
@@ -29,6 +30,7 @@ function toTaskChecked(row: any): Task | null {
             due: new Date(row.due),
             completed: row.completed,
             value: row.value,
+            deleted: row.deleted 
         }
         
     }
@@ -65,6 +67,7 @@ export class SQLiteTaskTable implements TaskTable {
                 completed INTEGER NOT NULL,
                 due INTEGER NOT NULL,
                 value INTEGER NOT NULL,
+                deleted INTEGER NOT NULL,
                 FOREIGN KEY (userID)
                 REFERENCES users (userID)
             );`
@@ -77,7 +80,7 @@ export class SQLiteTaskTable implements TaskTable {
 
 
 
-        let statement = this.db.prepare(`INSERT INTO tasks(userID, name, description, completed, due, value) values(?,?,?,?,?,?)`);
+        let statement = this.db.prepare(`INSERT INTO tasks(userID, name, description, completed, due, value, deleted) values(?,?,?,?,?,?,?)`);
 
         // insert relevant properites into a record in the table
         let info = statement.run(task.userID, 
@@ -85,7 +88,8 @@ export class SQLiteTaskTable implements TaskTable {
             task.description, 
             0, 
             task.due.getTime(),
-            task.value
+            task.value,
+            0,
         );
 
         console.log(info);
@@ -101,7 +105,7 @@ export class SQLiteTaskTable implements TaskTable {
     }
 
     async getByID(id: number): Promise<Task | null> {
-        let statement = this.db.prepare(`SELECT * from tasks WHERE taskID = ?`);
+        let statement = this.db.prepare(`SELECT * from tasks WHERE taskID = ? AND deleted = 0`);
 
         // return a task via the toTaskChecked function. If the task doesn't exist
         // or is malformed a null is returned.
@@ -111,7 +115,7 @@ export class SQLiteTaskTable implements TaskTable {
     }
 
     async getAll(): Promise<Task[]> {
-        let statement = this.db.prepare(`SELECT * from tasks`);
+        let statement = this.db.prepare(`SELECT * from tasks WHERE deleted = 0`);
         // the all() method returns an array of records which satisfy the query
         let res = statement.all();
         
@@ -130,7 +134,7 @@ export class SQLiteTaskTable implements TaskTable {
     }
 
     async getByName(name: string): Promise<Task | null> {
-        let statement = this.db.prepare(`SELECT * from tasks WHERE name = ?`);
+        let statement = this.db.prepare(`SELECT * from tasks WHERE name = ? AND deleted = 0`);
         return toTaskChecked(statement.get(name)); 
     }
 
@@ -138,7 +142,7 @@ export class SQLiteTaskTable implements TaskTable {
 
         // update a row in the database from the given data
         let statement = this.db.prepare(`
-            UPDATE tasks SET userID = ?, name = ?, description = ?, due = ?, completed = ?, value = ? WHERE taskID = ?`
+            UPDATE tasks SET userID = ?, name = ?, description = ?, due = ?, completed = ?, value = ?, deleted = ? WHERE taskID = ? AND deleted = 0;`
         );
         let info = statement.run(
             newTask.userID, 
@@ -147,6 +151,7 @@ export class SQLiteTaskTable implements TaskTable {
             newTask.due.getTime(),
             Number(newTask.completed),
             newTask.value,
+            Number(newTask.deleted),
             id
         );
 
@@ -159,7 +164,7 @@ export class SQLiteTaskTable implements TaskTable {
 
     deleteTask(id: number): void {
         // Delete task with ID
-        let statement = this.db.prepare(`DELETE FROM tasks WHERE taskID = ?`);
+        let statement = this.db.prepare(`UPDATE tasks SET deleted = 1 WHERE taskID = ? AND deleted = 0;`);
         let info = statement.run(id);
 
         // This should trip if the ID isn't in the database, but should be avoided
@@ -171,12 +176,12 @@ export class SQLiteTaskTable implements TaskTable {
     } 
 
     async getTaskForUser(userID: number, taskID: number): Promise<Task | null> {
-        let statement = this.db.prepare(`SELECT * from tasks WHERE taskID = ? AND userID = ?;`);
+        let statement = this.db.prepare(`SELECT * from tasks WHERE taskID = ? AND userID = ? AND deleted = 0;`);
         return toTaskChecked(statement.get(taskID, userID));
     }
 
     async getTasksForUser(userID: number): Promise<Task[]> {
-        let statement = this.db.prepare(`SELECT * from tasks WHERE userID = ?`);
+        let statement = this.db.prepare(`SELECT * from tasks WHERE userID = ? AND deleted = 0;`);
         let res = statement.all(userID);
 
         if (!res) {

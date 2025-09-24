@@ -110,6 +110,7 @@ export async function newTask(req: Request, res: Response) {
             due: new Date(due), 
             value: value,
             completed: false,
+            deleted: false,
         });
         // We send back useful information to the client
         res.json({ success: true, message: "Task added", task: {
@@ -128,6 +129,7 @@ export async function newTask(req: Request, res: Response) {
                 }); 
         }
         else {
+            console.log(err)
                 return res.status(500).json({ 
                     error: `Internal Server error`
                 }); 

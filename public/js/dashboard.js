@@ -9,6 +9,8 @@ const account_popup_button = document.getElementById("account-popup-button");
 const account_name = document.getElementById("account-name");
 const account_balance = document.getElementById("account-balance");
 
+const tabState = "Tasks";
+
 async function getInfo() {
   const response = await fetch("/api/v1/auth/info", {
     method: "GET",
@@ -84,6 +86,39 @@ function open_account_popup() {
 }
 function open_reward_popup() {
     reward_popup.style.display = "block";
+}
+
+function taskTab() {
+    let task_preview = document.getElementById("task-preview");
+    let non_tasks = document.getElementById("non-tasks");
+
+    non_tasks.classList.add("tab-hidden");
+    task_preview.classList.remove("tab-hidden");
+}
+function rewardTab() {
+    let task_preview = document.getElementById("task-preview");
+    let non_tasks = document.getElementById("non-tasks");
+    let reward_preview = document.getElementById("reward-tab");
+    let stat_preview = document.getElementById("stats-tab");
+
+    non_tasks.classList.remove("tab-hidden");
+    stat_preview.classList.add("tab-hidden");
+    task_preview.classList.add("tab-hidden");
+
+    reward_preview.classList.remove("tab-hidden")
+}
+function statTab() {
+    let task_preview = document.getElementById("task-preview");
+    let non_tasks = document.getElementById("non-tasks");
+    let reward_preview = document.getElementById("reward-tab");
+    let stat_preview = document.getElementById("stats-tab");
+
+    non_tasks.classList.remove("tab-hidden");
+    reward_preview.classList.add("tab-hidden")
+    task_preview.classList.add("tab-hidden");
+
+    stat_preview.classList.remove("tab-hidden");
+
 }
 
 window.addEventListener("click", (event) => {

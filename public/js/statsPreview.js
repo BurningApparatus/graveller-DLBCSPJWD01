@@ -67,8 +67,10 @@ function createBarHTML(percent, bars, key, value, highlight) {
     container.style["width"] = `${Math.floor(100 / bars) - 1}%`
 
     let label = document.createElement("span");
+    label.classList.add("bar-label")
     label.textContent = key;
     let quantity = document.createElement("span");
+    quantity.classList.add("bar-quantity")
     quantity.textContent = value;
     container.appendChild(label);
     container.appendChild(div);

@@ -1,12 +1,4 @@
 
-.rewards {
-    background-color: #fffaf3;
-    height: 70%;
-    width: 100%;
-    max-width: 100%;
-    max-height: 70%;
-    margin-top: 0.7em;
-}
 
 .reward-click {
     background-color: #286983;
@@ -43,3 +35,9 @@
     max-height: 70%;
 }
 
+
+@media (max-width: 768px) {
+    #rewardlist {
+        max-height: 100%;
+    }
+}

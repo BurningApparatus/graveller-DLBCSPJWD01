@@ -11,6 +11,7 @@
  * @property due - The due date of the task. Stored here as Date. Differs from the database in the SQLite implemention, as it does not have a native Date type.
  * @property completed - Whether the task has been completed. Differs from the database in teh SQLite implemention, as it does not have a native boolean type.
  * @property value - The reward value of the task.
+ * @property deleted - Whether the task has been marked for deletion
  */
 export interface Task {
     taskID: number,
@@ -20,4 +21,5 @@ export interface Task {
     due: Date,
     completed: boolean,
     value: number,
+    deleted: boolean
 }

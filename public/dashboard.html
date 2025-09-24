@@ -23,22 +23,32 @@
 
             </section>
 
+            <section class="tabs rounded">
+                <button class="dot-button tab-button" onclick="taskTab()"> Tasks </button>
+                <button class="dot-button tab-button" onclick="statTab()"> Stats </button>
+                <button class="dot-button tab-button" onclick="rewardTab()"> Rewards </button>
+            </section>
 
             
             <section class="content-primary">
-                <article class="task-preview rounded">
-                    <h2> Tasks </h2>
+                <article class="task-preview rounded" id="task-preview">
+                    <h2> Tasks 
+                    <button id="task-popup-button" class="new-task-button-mini dot-button" onclick="open_popup()"> + </button>
+</h2>
                     <ul id="tasklist" class="button-list"> </ul>
                     <button id="task-popup-button" class="new-task-button dot-button" onclick="open_popup()"> + </button>
                 </article>
 
-                <article class="non-tasks">
-                    <div class="stats rounded">
-                        <h2> Stats </h2>
+                <article class="non-tasks tab-hidden" id="non-tasks">
+                    <div class="stats rounded" id="stats-tab">
+                        <h2 class="stats-header"> Stats </h2>
                         <div class="bar-chart" id="daily-earnings-chart"></div>
                     </div>
-                    <div class="rewards rounded">
-                        <h2> Rewards </h2>
+                    <div class="rewards rounded" id="reward-tab">
+                        <h2> Rewards 
+
+                    <button id="reward-popup-button" class="new-task-button-mini dot-button" onclick="open_reward_popup()"> + </button>
+                        </h2>
                         <ul id="rewardlist" class="button-list"></ul>
 
                     <button id="reward-popup-button" class="new-task-button dot-button" onclick="open_reward_popup()"> + </button>

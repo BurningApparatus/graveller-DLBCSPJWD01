@@ -19,7 +19,8 @@ function toRewardChecked(row: any): Reward | null {
         typeof row.name == 'string' && 
         typeof row.description == 'string' &&
         typeof row.completions == 'number' &&
-        typeof row.value == 'number'
+        typeof row.value == 'number' &&
+        typeof row.deleted == 'number'
     ) {
         return {
             rewardID: row.rewardID,
@@ -28,6 +29,7 @@ function toRewardChecked(row: any): Reward | null {
             description: row.description,
             completions: row.completions,
             value: row.value,
+            deleted: row.deleted,
         }
         
     }
@@ -59,6 +61,7 @@ export class SQLiteRewardTable implements RewardTable {
                 description TEXT NOT NULL,
                 completions INTEGER NOT NULL,
                 value INTEGER NOT NULL,
+                deleted INTEGER NOT NULL,
                 FOREIGN KEY (userID)
                 REFERENCES users (userID)
             );`
@@ -69,14 +72,15 @@ export class SQLiteRewardTable implements RewardTable {
     async createReward(reward: Reward): Promise<Reward> {
 
         // create a row in the database from the given data
-        let statement = this.db.prepare(`INSERT INTO rewards(userID, name, description, completions, value) values(?,?,?,?,?)`);
+        let statement = this.db.prepare(`INSERT INTO rewards(userID, name, description, completions, value, deleted) values(?,?,?,?,?,?)`);
 
         let info = statement.run(
             reward.userID, 
             reward.name, 
             reward.description, 
             0, // completions defaults to 0.
-            reward.value
+            reward.value,
+            0, // deleted also defaults to 0.
         );
 
         console.log(info);
@@ -93,14 +97,14 @@ export class SQLiteRewardTable implements RewardTable {
     }
 
     async getByID(id: number): Promise<Reward | null> {
-        let statement = this.db.prepare(`SELECT * from rewards WHERE rewardID = ?`);
+        let statement = this.db.prepare(`SELECT * from rewards WHERE rewardID = ? AND deleted = 0;`);
         // return A reward via the toRewardChecked function. If the reward doesn't exist
         // or is malformed a null is returned.
         return toRewardChecked(statement.get(id));
     }
 
     async getAll(): Promise<Reward[]> {
-        let statement = this.db.prepare(`SELECT * from rewards`);
+        let statement = this.db.prepare(`SELECT * from rewards WHERE deleted = 0;`);
         // the all() method returns an array of records which satisfy the query
         let res = statement.all();
         
@@ -119,7 +123,7 @@ export class SQLiteRewardTable implements RewardTable {
     }
 
     async getByName(name: string): Promise<Reward | null> {
-        let statement = this.db.prepare(`SELECT * from rewards WHERE name = ?`);
+        let statement = this.db.prepare(`SELECT * from rewards WHERE name = ? AND deleted = 0;`);
         // return A reward via the toRewardChecked function. If the reward doesn't exist
         // or is malformed a null is returned.
         return toRewardChecked(statement.get(name)); 
@@ -128,7 +132,7 @@ export class SQLiteRewardTable implements RewardTable {
     updateReward(id: number, newReward: Reward): void {
         // update a row in the database from the given data
         let statement = this.db.prepare(`
-            UPDATE rewards SET userID = ?, name = ?, description = ?, completions = ?, value = ? WHERE rewardID = ?`
+            UPDATE rewards SET userID = ?, name = ?, description = ?, completions = ?, value = ? WHERE rewardID = ? AND deleted = 0;`
         );
         let info = statement.run(
             newReward.userID, 
@@ -148,7 +152,7 @@ export class SQLiteRewardTable implements RewardTable {
 
     deleteReward(id: number): void {
         // Delete reward with ID
-        let statement = this.db.prepare(`DELETE FROM rewards WHERE rewardID = ?`);
+        let statement = this.db.prepare(`UPDATE rewards SET deleted = 1 WHERE rewardID = ? AND deleted = 0;`);
         let info = statement.run(id);
 
         // This should trip if the ID isn't in the database, but should be avoided
@@ -160,13 +164,13 @@ export class SQLiteRewardTable implements RewardTable {
     } 
 
     async getRewardForUser(userID: number, rewardID: number): Promise<Reward | null> {
-        let statement = this.db.prepare(`SELECT * from rewards WHERE rewardID = ? AND userID = ?;`);
+        let statement = this.db.prepare(`SELECT * from rewards WHERE rewardID = ? AND userID = ? AND deleted = 0;`);
         return toRewardChecked(statement.get(rewardID, userID));
     }
 
     async getRewardsForUser(userID: number): Promise<Reward[]> {
         // functions in the same way as getRewards, except with the extra WHERE clause
-        let statement = this.db.prepare(`SELECT * from rewards WHERE userID = ?`);
+        let statement = this.db.prepare(`SELECT * from rewards WHERE userID = ? AND deleted = 0;`);
         let res = statement.all(userID);
 
         if (!res) {

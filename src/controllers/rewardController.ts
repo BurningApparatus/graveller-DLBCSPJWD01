@@ -104,6 +104,7 @@ export async function newReward(req: Request, res: Response) {
             description: description,
             value: value,
             completions: 0,
+            deleted: false,
         });
         res.json({ success: true, message: "Reward added", reward: {
             rewardID: newReward.rewardID,

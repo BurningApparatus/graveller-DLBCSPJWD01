@@ -11,6 +11,7 @@
  * @property description - The reward's description
  * @property completions - The times the user has completed the task
  * @property value - The price of the reward
+ * @property deleted - Whether the reward has been marked for deletion
  */
 export interface Reward {
     rewardID: number,
@@ -19,4 +20,5 @@ export interface Reward {
     description: string,
     completions: number,
     value: number,
+    deleted: boolean
 }
