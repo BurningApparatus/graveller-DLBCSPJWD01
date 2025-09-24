@@ -1,5 +1,4 @@
 import { Task } from '../../models/taskModel'
-import { TaskTable } from '../../repositories/taskTable'
 import { Database } from 'better-sqlite3'
 
 /**
@@ -41,9 +40,8 @@ function toTaskChecked(row: any): Task | null {
 
 /**
  * Class which represents an interface for the Task table for SQLite.
- * implements the TaskTable interface defined in /repositories/taskTable.ts
  */
-export class SQLiteTaskTable implements TaskTable {
+export class SQLiteTaskTable {
     private db: Database;
     
     constructor(db: Database) {
@@ -75,6 +73,11 @@ export class SQLiteTaskTable implements TaskTable {
         statement.run();
     }    
 
+    /**
+     * Creates a Task in the task table with the information provided
+     * errors may be thrown and must be handled by the controller function
+     * The taskID property in the provided object is ignored in this function
+     */
     async createTask(task: Task): Promise<Task> {
         console.log(task);
 
@@ -104,6 +107,10 @@ export class SQLiteTaskTable implements TaskTable {
 
     }
 
+    /**
+     * Returns a task from a given ID. Returns null if there is no task with the 
+     * specified ID
+     */
     async getByID(id: number): Promise<Task | null> {
         let statement = this.db.prepare(`SELECT * from tasks WHERE taskID = ? AND deleted = 0`);
 
@@ -114,6 +121,9 @@ export class SQLiteTaskTable implements TaskTable {
 
     }
 
+    /**
+     * Returns all tasks in the table in an array.
+     */
     async getAll(): Promise<Task[]> {
         let statement = this.db.prepare(`SELECT * from tasks WHERE deleted = 0`);
         // the all() method returns an array of records which satisfy the query
@@ -133,11 +143,22 @@ export class SQLiteTaskTable implements TaskTable {
 
     }
 
+    /**
+     * Returns a task from a given name. Returns null if there is no user with the 
+     * specified name. Case sensitive.
+     */
     async getByName(name: string): Promise<Task | null> {
         let statement = this.db.prepare(`SELECT * from tasks WHERE name = ? AND deleted = 0`);
         return toTaskChecked(statement.get(name)); 
     }
 
+    /**
+     * Updates the task of a given ID with new Row Data. 
+     *
+     * @param id The id of the task to change
+     * @param newTask the information of the new task to be inserted, except the userID
+     * field. This is ignored, as the primary key is never changed by this function.
+     */
     updateTask(id: number, newTask: Task): void {
 
         // update a row in the database from the given data
@@ -162,6 +183,9 @@ export class SQLiteTaskTable implements TaskTable {
 
     }
 
+    /**
+     * Delete the task of a specified id. Throws an error if there is no such task.
+     */
     deleteTask(id: number): void {
         // Delete task with ID
         let statement = this.db.prepare(`UPDATE tasks SET deleted = 1 WHERE taskID = ? AND deleted = 0;`);
@@ -175,6 +199,9 @@ export class SQLiteTaskTable implements TaskTable {
 
     } 
 
+    /**
+     * Restore a deleted task of a specified id. Throws an error if there is no such task.
+     */
     restoreTask(id: number): void {
         // Delete task with ID
         let statement = this.db.prepare(`UPDATE tasks SET deleted = 0 WHERE taskID = ?;`);
@@ -188,6 +215,10 @@ export class SQLiteTaskTable implements TaskTable {
 
     } 
 
+    /**
+     * Gets a task if it belongs to a specific user. 
+     * Returns null if the task doesn't belong to the user, or doesn't exist.
+     */
     async getTaskForUser(userID: number, taskID: number, show_deleted: boolean = false): Promise<Task | null> {
 
         let statement = this.db.prepare(`
@@ -196,6 +227,10 @@ export class SQLiteTaskTable implements TaskTable {
         return toTaskChecked(statement.get(taskID, userID));
     }
 
+    /**
+     * Gets all the tasks for a specific user. 
+     * Returns [] if a user has no tasks
+     */
     async getTasksForUser(userID: number): Promise<Task[]> {
         let statement = this.db.prepare(`SELECT * from tasks WHERE userID = ? AND deleted = 0;`);
         let res = statement.all(userID);

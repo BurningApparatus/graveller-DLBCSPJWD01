@@ -1,5 +1,4 @@
 import { Reward } from '../../models/rewardModel'
-import { RewardTable } from '../../repositories/rewardTable'
 import { Database } from 'better-sqlite3'
 
 /**
@@ -40,9 +39,8 @@ function toRewardChecked(row: any): Reward | null {
 
 /**
  * Class which represents an interface for the Reward table for SQLite.
- * implements the RewardTable interface defined in /repositories/rewardTable.ts
  */
-export class SQLiteRewardTable implements RewardTable {
+export class SQLiteRewardTable {
     private db: Database;
     
     constructor(db: Database) {
@@ -69,6 +67,11 @@ export class SQLiteRewardTable implements RewardTable {
         statement.run();
     }    
 
+    /**
+     * Creates a Reward in the table with the information provided
+     * errors may be thrown and must be handled by the controller function
+     * The rewardID property in the provided object is ignored in this function
+     */
     async createReward(reward: Reward): Promise<Reward> {
 
         // create a row in the database from the given data
@@ -96,6 +99,10 @@ export class SQLiteRewardTable implements RewardTable {
 
     }
 
+    /**
+     * Returns a task from a given ID. Returns null if there is no user with the 
+     * specified ID
+     */
     async getByID(id: number): Promise<Reward | null> {
         let statement = this.db.prepare(`SELECT * from rewards WHERE rewardID = ? AND deleted = 0;`);
         // return A reward via the toRewardChecked function. If the reward doesn't exist
@@ -103,6 +110,9 @@ export class SQLiteRewardTable implements RewardTable {
         return toRewardChecked(statement.get(id));
     }
 
+    /**
+     * Returns all tasks in the table in an array.
+     */
     async getAll(): Promise<Reward[]> {
         let statement = this.db.prepare(`SELECT * from rewards WHERE deleted = 0;`);
         // the all() method returns an array of records which satisfy the query
@@ -122,6 +132,10 @@ export class SQLiteRewardTable implements RewardTable {
 
     }
 
+    /**
+     * Returns a reward from a given name. Returns null if there is no reward with the 
+     * specified name. Case sensitive.
+     */
     async getByName(name: string): Promise<Reward | null> {
         let statement = this.db.prepare(`SELECT * from rewards WHERE name = ? AND deleted = 0;`);
         // return A reward via the toRewardChecked function. If the reward doesn't exist
@@ -129,6 +143,13 @@ export class SQLiteRewardTable implements RewardTable {
         return toRewardChecked(statement.get(name)); 
     }
 
+    /**
+     * Updates the task of a given ID with new Row Data. 
+     *
+     * @param id The id of the task to change
+     * @param newReward the information of the new reward to be inserted, except the rewardID
+     * field. This is ignored, as the primary key is never changed by this function.
+     */
     updateReward(id: number, newReward: Reward): void {
         // update a row in the database from the given data
         let statement = this.db.prepare(`
@@ -150,6 +171,9 @@ export class SQLiteRewardTable implements RewardTable {
 
     }
 
+    /**
+     * Delete the reward of a specified id. Throws an error if there is no such reward.
+     */
     deleteReward(id: number): void {
         // Delete reward with ID
         let statement = this.db.prepare(`UPDATE rewards SET deleted = 1 WHERE rewardID = ? AND deleted = 0;`);
@@ -162,6 +186,11 @@ export class SQLiteRewardTable implements RewardTable {
         }
 
     } 
+
+    /**
+     * Restore the reward from deletion of a specified id. 
+     * Throws an error if there is no such reward.
+     */
     restoreReward(id: number): void {
         // Delete reward with ID
         let statement = this.db.prepare(`UPDATE rewards SET deleted = 0 WHERE rewardID = ?`);
@@ -175,11 +204,20 @@ export class SQLiteRewardTable implements RewardTable {
 
     } 
 
+
+    /**
+     * Gets a reward if it belongs to a specific user. 
+     * Returns null if the reward doesn't belong to the user, or doesn't exist.
+     */
     async getRewardForUser(userID: number, rewardID: number, show_deleted: boolean = false): Promise<Reward | null> {
         let statement = this.db.prepare(`SELECT * from rewards WHERE rewardID = ? AND userID = ? ${show_deleted ? "" : "AND deleted = 0;"}`);
         return toRewardChecked(statement.get(rewardID, userID));
     }
 
+    /**
+     * Gets all the rewards for a specific user. 
+     * Returns [] if a user has no rewards, an null if the user doesn't exist.
+     */
     async getRewardsForUser(userID: number): Promise<Reward[]> {
         // functions in the same way as getRewards, except with the extra WHERE clause
         let statement = this.db.prepare(`SELECT * from rewards WHERE userID = ? AND deleted = 0;`);

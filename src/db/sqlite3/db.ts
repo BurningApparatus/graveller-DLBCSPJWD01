@@ -3,10 +3,6 @@
  * This file exists as the delcaration of global variables which handle the I/O operations 
  * for each table individually. Files are expected to import each relevant global variable
  * for their specified requirements.
- *
- *
- * Each table follows the interface details described in /repositories for the sqlite 
- * database.
  */
 
 import DatabaseConstructor, {Database} from "better-sqlite3";

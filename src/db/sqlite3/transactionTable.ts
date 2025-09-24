@@ -1,6 +1,5 @@
 
 import { Transaction, TransactionSummary } from '../../models/transactionModel'
-import { TransactionTable } from '../../repositories/transactionTable'
 import { Database } from 'better-sqlite3'
 
 /**
@@ -37,7 +36,7 @@ function toTransactionChecked(row: any): Transaction | null {
  * Class which represents an interface for the Reward table for SQLite.
  * implements the TaskTable interface defined in /repositories/taskTable.ts
  */
-export class SQLiteTransactionTable implements TransactionTable {
+export class SQLiteTransactionTable {
     private db: Database;
     
     constructor(db: Database) {
@@ -64,6 +63,11 @@ export class SQLiteTransactionTable implements TransactionTable {
         statement.run();
     }    
 
+    /**
+     * Creates a Transaction in the transaction table 
+     * errors (such as non-unique username) may be thrown and must be handled by 
+     * the controller function
+     */
     async createTransaction(transaction: Transaction): Promise<Transaction> {
         console.log(transaction);
 
@@ -97,6 +101,10 @@ export class SQLiteTransactionTable implements TransactionTable {
 
     }
 
+    /**
+     * Returns a transaction from a given ID. 
+     * @returns the transaction or null if there is no transaction with the specified ID
+     */
     async getByID(id: number): Promise<Transaction | null> {
         let statement = this.db.prepare(`SELECT * from transactions WHERE transactionID = ?`);
 
@@ -107,6 +115,9 @@ export class SQLiteTransactionTable implements TransactionTable {
 
     }
 
+    /**
+     * Returns all transactions in the table in an array.
+     */
     async getAll(): Promise<Transaction[]> {
         let statement = this.db.prepare(`SELECT * from transactions`);
         // the all() method returns an array of records which satisfy the query
@@ -126,6 +137,9 @@ export class SQLiteTransactionTable implements TransactionTable {
 
     }
 
+    /**
+     * Returns all transactions for a specific user in the table in an array.
+     */
     async getAllForUser(id: number): Promise<Transaction[]> {
         let statement = this.db.prepare(`SELECT * from transactions WHERE userID = ?`);
         // the all() method returns an array of records which satisfy the query
@@ -143,6 +157,11 @@ export class SQLiteTransactionTable implements TransactionTable {
             } 
         })
     }
+
+    /**
+     * Returns all transactions for a specific user until the specified date in the table 
+     * in an array.
+     */
     async getUserTransactionSummary(id: number, date: Date): Promise<TransactionSummary[]> {
         // Sums and groups transactions by date
         let statement = this.db.prepare(`SELECT date, SUM(amount) AS total FROM transactions WHERE userID = ? AND date >= ? GROUP BY date ORDER BY date`);
@@ -164,6 +183,14 @@ export class SQLiteTransactionTable implements TransactionTable {
     }
 
 
+    /**
+     * Updates the transaction of a given ID with new Row Data. 
+     *
+     * @param id The id of the transaction to change
+     * @param newTransaction the information of the new transaction to be inserted, except the 
+     * transactionID
+     * field. This is ignored, as the primary key is never changed by this function.
+     */
     updateTransaction(id: number, newTransaction: Transaction): void {
 
         // update a row in the database from the given data
@@ -184,6 +211,9 @@ export class SQLiteTransactionTable implements TransactionTable {
 
     }
 
+    /**
+     * Deletes the transaction of a given ID 
+     */
     deleteTransaction(id: number): void {
         // Delete transaction with ID
         let statement = this.db.prepare(`DELETE FROM transactions WHERE transactionID = ?`);

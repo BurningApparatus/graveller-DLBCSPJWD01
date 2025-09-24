@@ -1,5 +1,4 @@
 import { User } from '../../models/userModel'
-import { UserTable } from '../../repositories/userTable'
 import { Database } from "better-sqlite3";
 
 /**
@@ -34,7 +33,7 @@ function toUserChecked(row: any): User | null {
  * Class which represents an interface for the Task table for SQLite.
  * implements the TaskTable interface defined in /repositories/taskTable.ts
  */
-export class SQLiteUserTable implements UserTable {
+export class SQLiteUserTable {
     private db: Database;
     
     constructor(db: Database) {
@@ -56,6 +55,11 @@ export class SQLiteUserTable implements UserTable {
         statement.run();
     }    
 
+    /**
+     * Creates a User in the user table with the following name and password
+     * errors (such as non-unique username) may be thrown and must be handled by 
+     * the controller function
+     */
     async createUser(name: string, password: string): Promise<User> {
         let statement = this.db.prepare(`INSERT INTO users(name, passwordHash, balance) values(?, ?, ?)`);
         // insert relevant properites into a record in the table
@@ -74,6 +78,10 @@ export class SQLiteUserTable implements UserTable {
 
     }
 
+    /**
+     * Returns a user from a given ID. Returns null if there is no user with the 
+     * specified ID
+     */
     async getByID(id: number): Promise<User | null> {
         let statement = this.db.prepare(`SELECT * from users WHERE userID = ?`);
 
@@ -83,6 +91,9 @@ export class SQLiteUserTable implements UserTable {
 
     }
 
+    /**
+     * Returns all users in the table in an array.
+     */
     async getAll(): Promise<User[]> {
         let statement = this.db.prepare(`SELECT * from users`);
 
@@ -102,11 +113,22 @@ export class SQLiteUserTable implements UserTable {
 
     }
 
+    /**
+     * Returns a user from a given name. Returns null if there is no user with the 
+     * specified name. Case sensitive.
+     */
     async getByName(name: string): Promise<User | null> {
         let statement = this.db.prepare(`SELECT * from users WHERE name = ?`);
         return toUserChecked(statement.get(name)); 
     }
 
+    /**
+     * Updates the user of a given ID with new Row Data. 
+     *
+     * @param id The id of the user to change
+     * @param newUser the information of the new user to be inserted, except the userID
+     * field. This is ignored, as the primary key is never changed by this function.
+     */
     updateUser(id: number, newUser: User): void {
 
 
@@ -127,6 +149,9 @@ export class SQLiteUserTable implements UserTable {
 
     }
 
+    /**
+     * Delete the user of a specified id. Throws an error if there is no such user.
+     */
     deleteUser(id: number): void {
         // Delete user with ID
         let statement = this.db.prepare(`DELETE FROM users WHERE userID = ?`);
