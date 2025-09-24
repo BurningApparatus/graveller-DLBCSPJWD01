@@ -175,8 +175,24 @@ export class SQLiteTaskTable implements TaskTable {
 
     } 
 
-    async getTaskForUser(userID: number, taskID: number): Promise<Task | null> {
-        let statement = this.db.prepare(`SELECT * from tasks WHERE taskID = ? AND userID = ? AND deleted = 0;`);
+    restoreTask(id: number): void {
+        // Delete task with ID
+        let statement = this.db.prepare(`UPDATE tasks SET deleted = 0 WHERE taskID = ?;`);
+        let info = statement.run(id);
+
+        // This should trip if the ID isn't in the database, but should be avoided
+        // by the caller
+        if (info.changes == 0) {
+            throw Error("NoRowsUpdated");
+        }
+
+    } 
+
+    async getTaskForUser(userID: number, taskID: number, show_deleted: boolean = false): Promise<Task | null> {
+
+        let statement = this.db.prepare(`
+            SELECT * from tasks WHERE taskID = ? AND userID = ? ${show_deleted ? "" : "AND deleted = 0"};
+        `);
         return toTaskChecked(statement.get(taskID, userID));
     }
 

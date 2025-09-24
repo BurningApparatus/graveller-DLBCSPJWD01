@@ -5,6 +5,7 @@ const task_popup = document.getElementById("task-popup")
 const popup_button = document.getElementById("task-popup-button");
 const account_popup = document.getElementById("account-popup");
 const reward_popup = document.getElementById("reward-popup");
+const notification_popup = document.getElementById("notification-popup");
 const account_popup_button = document.getElementById("account-popup-button");
 const account_name = document.getElementById("account-name");
 const account_balance = document.getElementById("account-balance");
@@ -86,6 +87,29 @@ function open_account_popup() {
 }
 function open_reward_popup() {
     reward_popup.style.display = "block";
+}
+
+function send_notification(message, button_callback=null) {
+    let notification_text = document.getElementById("notification-text");
+    let notification_link = document.getElementById("notification-link");
+    notification_text.textContent = message;
+
+    notification_popup.style.display = "block";
+
+    console.log(button_callback);
+    if (button_callback != null) {
+        notification_link.addEventListener("click", button_callback);
+        notification_link.style.display = "inline";
+    }
+    else {
+        notification_link.style.display = "none";
+    }
+
+    setTimeout(close_notification, 5000);
+}
+
+function close_notification() {
+    notification_popup.style.display = "none";
 }
 
 function taskTab() {

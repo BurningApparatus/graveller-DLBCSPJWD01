@@ -415,6 +415,41 @@ export async function deleteTask(req: Request, res: Response) {
 }
 
 /**
+ * PUT route for restoring a deleted task from the tasks table. 
+ * Assumes valid auth, :id, and JSON contents
+ * given by requireAuth, validateID, and validateTaskUpdate
+ */
+export async function restoreTask(req: Request, res: Response) {
+    let user = req.session.user;
+    let taskIDString = req.params.id;
+
+    let taskID = parseInt(taskIDString);
+ 
+    try {
+        // we get the task
+        let old_task = await taskTable.getTaskForUser(user?.userID || -1, taskID, true);
+        if (old_task) {
+            // if it exists, we delete it from the database
+            taskTable.restoreTask(taskID);
+            return res.status(200).json({ message: "Task restored successfully.", old_task });
+        }
+        else {
+            return res.status(404).json({ error: `Task ${taskID} not found for user` });
+        }
+    }
+    catch (err){
+        if (err instanceof SqliteError) {
+            return res.status(500).json({ 
+                error: `Database error ${err.code}: ${err.message}`
+            }); 
+        }
+        return res.status(500).json({ 
+            error: `Internal Server error`
+        }); 
+    }
+}
+
+/**
  * GET route for getting a particular task for a user. Requires auth and validateID
  */
 export async function getTaskByID(req: Request, res: Response) {

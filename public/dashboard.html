@@ -106,6 +106,16 @@
                     <button type="submit" class="dot-button">Create</button>
                 </form>
         </div>
+
+        <div class="popup notification-popup" id="notification-popup">
+            <div id="notification" class="rounded">
+                <div>
+                    <span id="notification-text"> Hiya! This is my notification text</span>
+                    <button id="notification-link" class="dot-button"> Undo </button> 
+                </div>
+                <button onclick="close_notification()" class="notification-clear"> X </button>
+            </div>
+        </div>
     </body>
     
     <script src="/js/dashboard.js"> </script>

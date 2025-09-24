@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express'
-import { validateNewTask, newTask, getTasks, getTaskByID, requireAuth, validateID, completeTask, uncompleteTask, updateTask, validateTaskUpdate, deleteTask, refreshTask } from '../controllers/taskController'
+import { validateNewTask, newTask, getTasks, getTaskByID, requireAuth, validateID, completeTask, uncompleteTask, updateTask, validateTaskUpdate, deleteTask, refreshTask, restoreTask } from '../controllers/taskController'
 
 const router = Router();
 
@@ -15,5 +15,6 @@ router.put("/:id/refresh", requireAuth, validateID, refreshTask)
 router.put("/:id/uncomplete", requireAuth, validateID, uncompleteTask)
 router.put("/:id", requireAuth, validateID, validateTaskUpdate, updateTask)
 router.delete("/:id", requireAuth, validateID, deleteTask)
+router.put("/:id/restore", requireAuth, validateID, restoreTask)
 
 export default router;

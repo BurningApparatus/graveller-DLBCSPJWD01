@@ -297,6 +297,41 @@ export async function deleteReward(req: Request, res: Response) {
     }
 }
 
+
+/**
+ * PUT route for restoring a deleted reward from the rewards table. Assumes valid auth, and :id. 
+ */
+export async function restoreReward(req: Request, res: Response) {
+    let user = req.session.user;
+    let rewardIDString = req.params.id;
+
+    let rewardID = parseInt(rewardIDString);
+ 
+    // The try catch is necessary as all database operations may return SQLite errors
+    try {
+        // This acts as a guard to ensure that the user can't delete the rewards of other users
+        // even though the data besides the id is not strictly necessary for the deletion
+        let old_reward = await rewardTable.getRewardForUser(user?.userID || -1, rewardID, true);
+        if (old_reward) {
+            rewardTable.restoreReward(rewardID);
+            return res.status(200).json({ message: "Reward restored successfully.", old_reward });
+        }
+        else {
+            return res.status(404).json({ error: `Reward ${rewardID} not found for user` });
+        }
+    }
+    catch (err){
+        if (err instanceof SqliteError) {
+            return res.status(500).json({ 
+                error: `Database error ${err.code}: ${err.message}`
+            }); 
+        }
+        return res.status(500).json({ 
+            error: `Internal Server error`
+        }); 
+    }
+}
+
 /**
  * GET route for returning a reward from the rewards table. Assumes valid auth, and :id. 
  */

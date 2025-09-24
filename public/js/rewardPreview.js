@@ -1,4 +1,5 @@
 
+const rewardDeletedStack = [];
 async function hydrateRewards() {
     let rewardlist = document.getElementById("rewardlist");
 
@@ -101,6 +102,7 @@ async function completeReward(id) {
         const out = await res.json();
         let balElement = document.getElementById("balance");
 
+        send_notification("Reward Redeemed!");
         console.log(out);
         let clientBalance = Number(balElement.textContent.substring(1));
 
@@ -123,9 +125,40 @@ async function deleteReward(id) {
         credentials: "include" 
     });
 
-    if (!res.ok) {
+    if (res.ok) {
+        const out = await res.json();
+        send_notification("Reward deleted", undoRewardDeletion);
+        rewardDeletedStack.push(out.old_reward.rewardID);
+    }
+    else {
         const error = await res.json();
         alert("Error: " + error.error);
+    }
+}
+
+async function undoRewardDeletion() {
+
+    let last_deleted_id = rewardDeletedStack.pop();
+    if (last_deleted_id) {
+        await restoreReward(last_deleted_id);
+    }
+}
+
+async function restoreReward(id) { 
+
+    const res = await fetch(`/api/v1/rewards/${id}/restore`, {
+        method: "PUT",
+        credentials: "include" 
+    });
+
+    if (res.ok) {
+        const out = await res.json();
+        hydrateRewards();
+    }
+    else {
+        const error = await res.json();
+        alert("Error: " + error.error);
+
     }
 }
 hydrateRewards();

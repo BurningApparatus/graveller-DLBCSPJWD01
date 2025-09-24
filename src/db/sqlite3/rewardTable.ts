@@ -162,9 +162,21 @@ export class SQLiteRewardTable implements RewardTable {
         }
 
     } 
+    restoreReward(id: number): void {
+        // Delete reward with ID
+        let statement = this.db.prepare(`UPDATE rewards SET deleted = 0 WHERE rewardID = ?`);
+        let info = statement.run(id);
 
-    async getRewardForUser(userID: number, rewardID: number): Promise<Reward | null> {
-        let statement = this.db.prepare(`SELECT * from rewards WHERE rewardID = ? AND userID = ? AND deleted = 0;`);
+        // This should trip if the ID isn't in the database, but should be avoided
+        // by the caller
+        if (info.changes == 0) {
+            throw Error("NoRowsUpdated");
+        }
+
+    } 
+
+    async getRewardForUser(userID: number, rewardID: number, show_deleted: boolean = false): Promise<Reward | null> {
+        let statement = this.db.prepare(`SELECT * from rewards WHERE rewardID = ? AND userID = ? ${show_deleted ? "" : "AND deleted = 0;"}`);
         return toRewardChecked(statement.get(rewardID, userID));
     }
 

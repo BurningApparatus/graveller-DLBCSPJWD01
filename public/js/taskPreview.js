@@ -10,6 +10,7 @@ const formatter = new Intl.DateTimeFormat("en-US", {
 
 let balanceElement = document.getElementById("balance");
 let clientTasks = [];
+const taskDeletedStack = [];
 //let balanceElement = document.getElementById("balance");
 //let clientBalance = Number(balanceElement.textContent.substring(1));
 
@@ -91,12 +92,10 @@ function createTaskHTML(task) {
     } );
     del.addEventListener("click", async () => {
 
-        let userConfirm = confirm("Are you sure you want to delete this task? This action is not reversible.");
+        //let userConfirm = confirm("Are you sure you want to delete this task? This action is not reversible.");
 
-        if (userConfirm) {
 
-            await deleteTask(task.taskID);
-        }
+        await deleteTask(task.taskID);
         hydrateTasks();
     } );
     refresh.addEventListener("click", async () => {
@@ -137,6 +136,7 @@ async function toggleTask(id, completed) {
         console.log(out.task.value);
         console.log(clientBalance);
         if (!completed) {
+            send_notification("Task completed!");
             clientBalance += out.task.value;
         }
         else {
@@ -160,9 +160,34 @@ async function deleteTask(id) {
         credentials: "include" 
     });
 
-    if (!res.ok) {
+    if (res.ok) {
+        const out = await res.json();
+        send_notification("Task deleted", undoDeletion);
+        taskDeletedStack.push(out.old_task.taskID);
+    }
+    else {
         const error = await res.json();
         alert("Error: " + error.error);
+
+    }
+}
+
+
+async function restoreTask(id) { 
+
+    const res = await fetch(`/api/v1/tasks/${id}/restore`, {
+        method: "PUT",
+        credentials: "include" 
+    });
+
+    if (res.ok) {
+        const out = await res.json();
+        hydrateTasks();
+    }
+    else {
+        const error = await res.json();
+        alert("Error: " + error.error);
+
     }
 }
 async function refreshTask(id) { 
@@ -175,6 +200,13 @@ async function refreshTask(id) {
     if (!res.ok) {
         const error = await res.json();
         alert("Error: " + error.error);
+    }
+}
+
+async function undoDeletion() {
+    let last_deleted_id = taskDeletedStack.pop();
+    if (last_deleted_id) {
+        await restoreTask(last_deleted_id);
     }
 }
 
