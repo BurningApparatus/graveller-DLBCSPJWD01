@@ -24,7 +24,7 @@
                     <button class="icon-button" id="dark-button" onclick="toggleDark()">  
                         <img src="/svg/moon.svg" style="width: 2em"/> </button>
                     </button>
-                    <button class="icon-button" id="account-popup-button" onclick="open_account_popup()"> 
+                    <button class="icon-button" id="account-popup-button" onclick="activate_popup('account-popup')"> 
                         <img src="/svg/user.svg" style="width: 2em"/> </button>
                 </div>
 
@@ -40,10 +40,10 @@
             <section class="content-primary">
                 <article class="task-preview rounded" id="task-preview">
                     <h2> Tasks 
-                    <button id="task-popup-button" class="new-task-button-mini dot-button" onclick="open_popup()"> + </button>
+                    <button id="task-popup-button" class="new-task-button-mini dot-button" onclick="activate_popup('task-popup')"> + </button>
 </h2>
                     <ul id="tasklist" class="button-list"> </ul>
-                    <button id="task-popup-button" class="new-task-button dot-button" onclick="open_popup()"> + </button>
+                    <button id="task-popup-button" class="new-task-button dot-button" onclick="activate_popup('task-popup')"> + </button>
                 </article>
 
                 <article class="non-tasks tab-hidden" id="non-tasks">
@@ -54,11 +54,11 @@
                     <div class="rewards rounded" id="reward-tab">
                         <h2> Rewards 
 
-                    <button id="reward-popup-button" class="new-task-button-mini dot-button" onclick="open_reward_popup()"> + </button>
+                    <button id="reward-popup-button" class="new-task-button-mini dot-button" onclick="activate_popup('reward-popup')"> + </button>
                         </h2>
                         <ul id="rewardlist" class="button-list"></ul>
 
-                    <button id="reward-popup-button" class="new-task-button dot-button" onclick="open_reward_popup()"> + </button>
+                    <button id="reward-popup-button" class="new-task-button dot-button" onclick="activate_popup('reward-popup')"> + </button>
                     </div>
 
                 </article>
@@ -116,7 +116,7 @@
 
         <div class="popup notification-popup" id="notification-popup">
             <div id="notification" class="rounded">
-                <div>
+                <div id="notification-container">
                     <span id="notification-text"> Hiya! This is my notification text</span>
                     <button id="notification-link" class="dot-button"> Undo </button> 
                 </div>

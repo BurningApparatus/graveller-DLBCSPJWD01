@@ -1,4 +1,5 @@
 
+// Register Form handling
 const form = document.getElementById('registerForm');
 const errorMessage = document.getElementById('errorMessage');
 
@@ -7,12 +8,15 @@ form.addEventListener('submit', async (e) => {
     errorMessage.textContent = ''; // reset error
 
     confirmPassword = document.getElementById('confirm-password').value;
+
+    // Pass in the username and password as JSON body to register API call
     const formData = {
         username: document.getElementById('username').value,
         password: document.getElementById('password').value,
     };
 
 
+    // Super secure password confirmation
     if (formData.password != confirmPassword) {
         errorMessage.textContent = "Passwords do not match";
         return;
@@ -38,11 +42,11 @@ form.addEventListener('submit', async (e) => {
         window.location.href = "/dashboard.html";
     }
     else {
+        // This error message trips, among other things, if a username already exists
         errorMessage.textContent = result.message || "Failed to Register";
 
     }
 
 
 
-    console.log(result);
 });

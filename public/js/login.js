@@ -1,3 +1,5 @@
+
+// Login form handling
 const form = document.getElementById('loginForm');
 const errorMessage = document.getElementById('errorMessage');
 
@@ -5,6 +7,7 @@ form.addEventListener('submit', async (e) => {
     e.preventDefault(); // stop normal form submission
     errorMessage.textContent = ''; // reset error
 
+    // We get the JSON body from the form fields
     const formData = {
         username: document.getElementById('username').value,
         password: document.getElementById('password').value
@@ -27,6 +30,7 @@ form.addEventListener('submit', async (e) => {
     const result = await response.json();
 
     if (result.success) {
+        // If successful, we should be ok to go to the dasboard
         window.location.href = "/dashboard.html";
     }
     else {

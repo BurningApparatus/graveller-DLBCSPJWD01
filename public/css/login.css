@@ -1,5 +1,14 @@
 
 body {
+body {
+    font-family: Arial, sans-serif;
+    color: #575279;
+}
+html,body { 
+    height:100%; 
+    margin: 0;
+    background-color: #faf4ed;
+}
     font-family: Arial, sans-serif;
     color: #575279;
 }

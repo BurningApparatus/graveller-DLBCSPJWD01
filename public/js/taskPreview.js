@@ -1,4 +1,5 @@
 
+// Sets the format for rendering dates in the task view
 const formatter = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "long",
@@ -8,12 +9,13 @@ const formatter = new Intl.DateTimeFormat("en-US", {
 
 });
 
-let balanceElement = document.getElementById("balance");
-let clientTasks = [];
+// The stack of deleted Task IDs for restoring deleted tasks via undo
 const taskDeletedStack = [];
-//let balanceElement = document.getElementById("balance");
-//let clientBalance = Number(balanceElement.textContent.substring(1));
 
+/**
+ * Hydrate the tasklist Element with <li> representing tasks and showing task info from
+ * GET /tasks
+ */
 async function hydrateTasks() {
     let tasklist = document.getElementById("tasklist");
 
@@ -22,107 +24,95 @@ async function hydrateTasks() {
         credentials: "include" 
     });
 
-    tasklist.innerHTML = ""; // clear
+    tasklist.innerHTML = ""; // clear list
+
     if (response.ok) {
+        // The request returns a JSON array of task objects
         const tasks = await response.json();
+
+        // This puts non-completed above completed ones
         tasks.sort((a, b) => a.completed - b.completed);
 
-        clientTasks = tasks;
 
         tasks.forEach((task) => {
-            //let li = document.createElement("li");
-            //li.appendChild(document.createTextNode(task.name));
             tasklist.appendChild(createTaskHTML(task));
         })
 
     }
 }
 
-async function hydrateBalance() {
-
-    const response = await fetch("/api/v1/auth/info", {
-        method: "GET",
-        credentials: "include" 
-    });
-
-    if (response.ok) {
-        const user = await response.json();
-        console.log(`WERE GETTING THIS SHIT BRO ${user.balance}`)
-        balanceElement.textContent = "$" + user.balance;
-
-    }
-}
-hydrateBalance();
-function softHydrateTasks() {
-    let tasklist = document.getElementById("tasklist");
-    tasklist.innerHTML = ""; // clear
-
-    clientTasks.sort((a, b) => a.completed - b.completed);
-
-    clientTasks.forEach((task) => {
-        tasklist.appendChild(createTaskHTML(task));
-    })
-
-}
-
+/**
+ * Assembles an <li> element which holds all task information from given task
+ */
 function createTaskHTML(task) {
     let li = document.createElement("li");
     li.classList.add("task");
 
-    
-
     let dueDate = new Date(task.due);
+
+    // Button which can be clicked to complete the task and holds main content
     let taskClickable = tag("button", "task-click", "");
 
     let title = tag("span","task-title", `${task.name} - $${task.value}`);
+
+    // Delete button
     let del = tag("button","task-delete", ``);
 
+    // Add svg icons for delete and refresh buttons
     let x_img = document.createElement("img");
     x_img.classList.add("x-img");
     x_img.src = "/svg/delete.svg";
+
+    del.appendChild(x_img);
+
+    let refresh = tag("button","task-refresh", ``);
 
     let r_img = document.createElement("img");
     r_img.classList.add("refresh-img");
     r_img.src = "/svg/refresh.svg";
 
-    let refresh = tag("button","task-refresh", ``);
     refresh.appendChild(r_img);
 
-    del.appendChild(x_img);
     let description = tag("div", "task-description", task.description);
     let due = tag("div", "task-due", formatter.format(dueDate));
 
+    // Extra styling for completed tasks
     if (task.completed) {
         title.classList.add("task-done");
         description.classList.add("task-done");
         taskClickable.classList.add("task-done-click");
     }
 
+    // Task Completion on clicking main content
     taskClickable.addEventListener("click", async () => {
         await toggleTask(task.taskID, task.completed);
         hydrateTasks();
     } );
+
+    // Task deletion 
     del.addEventListener("click", async () => {
-
-        //let userConfirm = confirm("Are you sure you want to delete this task? This action is not reversible.");
-
-
         await deleteTask(task.taskID);
         hydrateTasks();
     } );
-    refresh.addEventListener("click", async () => {
 
+    // Task deletion refresh
+    refresh.addEventListener("click", async () => {
         await refreshTask(task.taskID);
         hydrateTasks();
     } );
 
     taskClickable.appendChild(title);
     taskClickable.appendChild(description);
+
+    // Due date not displayed for completed task
     if (!task.completed) {
         taskClickable.appendChild(due);
     }
+
     li.appendChild(taskClickable);
     li.appendChild(del);
+
+    // Refresh button only displayed for completed tasks
     if (task.completed) {
         li.appendChild(refresh);
     }
@@ -130,12 +120,18 @@ function createTaskHTML(task) {
     return li;
 }
 
+/**
+ * Callback for task completion
+ */
 async function toggleTask(id, completed) { 
 
+    // Whether or not the function should complete or uncomplete a task
     let end = completed ? "uncomplete" : "complete"
     console.log(completed);
     console.log(end);
 
+    // Since the API only has /complete and /uncomplete, we dynamically
+    // change which endpoint we request to get toggle functionality
     const res = await fetch(`/api/v1/tasks/${id}/${end}`, {
         method: "PUT",
         credentials: "include" 
@@ -143,19 +139,28 @@ async function toggleTask(id, completed) {
 
     if (res.ok) {
         const out = await res.json();
+
+        let balanceElement = document.getElementById("balance");
+        let accountBalance = document.getElementById("account-balance");
+
+        // There is no reason to send back a request to database to find
+        // out the new balance, we have all the info on client side
+        // by reading the data off of the balance element, stripping the dollar 
+        // sign and converting to Number
         let clientBalance = Number(balanceElement.textContent.substring(1));
 
-        console.log(out.task.value);
-        console.log(clientBalance);
         if (!completed) {
             send_notification("Task completed!");
+            // We to balance if completion
             clientBalance += out.task.value;
         }
         else {
+            // We subtract from balance if not completion
             clientBalance -= out.task.value;
         }
+        // Balance is represented twice on the website (in the header and account popup)
         balanceElement.innerHTML = "$" + clientBalance;
-        account_balance.textContent = "$" + clientBalance;
+        accountBalance.textContent = "$" + clientBalance;
 
     }
     else {
@@ -165,6 +170,9 @@ async function toggleTask(id, completed) {
     }
 }
 
+/**
+ * Callback for the delete button
+ */
 async function deleteTask(id) { 
 
     const res = await fetch(`/api/v1/tasks/${id}`, {
@@ -174,7 +182,9 @@ async function deleteTask(id) {
 
     if (res.ok) {
         const out = await res.json();
+        // We give the option to undo a deletion
         send_notification("Task deleted", undoDeletion);
+        // Add it to the undo stack
         taskDeletedStack.push(out.old_task.taskID);
     }
     else {
@@ -185,6 +195,9 @@ async function deleteTask(id) {
 }
 
 
+/**
+ * Function which restores a deleted task
+ */
 async function restoreTask(id) { 
 
     const res = await fetch(`/api/v1/tasks/${id}/restore`, {
@@ -202,6 +215,10 @@ async function restoreTask(id) {
 
     }
 }
+
+/**
+ * Call back for the refresh button
+ */
 async function refreshTask(id) { 
 
     const res = await fetch(`/api/v1/tasks/${id}/refresh`, {
@@ -215,6 +232,10 @@ async function refreshTask(id) {
     }
 }
 
+/**
+ * Function which reads the global taskDeletedStack, reading the topmost
+ * value and restoring it.
+ */
 async function undoDeletion() {
     let last_deleted_id = taskDeletedStack.pop();
     if (last_deleted_id) {
@@ -222,6 +243,10 @@ async function undoDeletion() {
     }
 }
 
+/**
+ * Simple helper function for creating HTML DOM elements with a className
+ * and textContent
+ */
 function tag(element, className, content) {
     let e = document.createElement(element);
     e.classList.add(className);
@@ -239,6 +264,7 @@ form.addEventListener('submit', async (e) => {
     e.preventDefault(); // stop normal form submission
     errorMessage.textContent = ''; // reset error
 
+    // get the form data for the request as a JS Object
     const formData = {
         name: document.getElementById('taskname').value,
         description: document.getElementById('taskdesc').value,
@@ -252,6 +278,7 @@ form.addEventListener('submit', async (e) => {
         headers: {
             'Content-Type': 'application/json'
         },
+        // JS object is converted to JSON in request body
         body: JSON.stringify(formData)
     });
 
@@ -264,6 +291,7 @@ form.addEventListener('submit', async (e) => {
     const result = await response.json();
 
     if (result.success) {
+        // Refresh tasks as there is a new one
         hydrateTasks();
     }
     else {
@@ -273,5 +301,4 @@ form.addEventListener('submit', async (e) => {
 
 
 
-    console.log(result);
 });

@@ -1,5 +1,10 @@
 
+// Stack for undoing deleted tasks
 const rewardDeletedStack = [];
+
+/**
+ * Fill rewardslist <ul> element with rewards from GET /rewards 
+ */
 async function hydrateRewards() {
     let rewardlist = document.getElementById("rewardlist");
 
@@ -11,18 +16,20 @@ async function hydrateRewards() {
     rewardlist.innerHTML = ""; // clear
     if (response.ok) {
         const rewards = await response.json();
+        // Have lower value (more common) rewards come first
         rewards.rewards.sort((a, b) => a.value - b.value);
 
         rewards.rewards.forEach((reward) => {
-            //let li = document.createElement("li");
-            //li.appendChild(document.createTextNode(task.name));
             rewardlist.appendChild(createRewardHTML(reward));
         })
 
     }
 }
 
-function createRewardHTML(task) {
+/**
+ * Creates HTML DOM element for representing rewards from data in object
+ */
+function createRewardHTML(reward) {
     let li = document.createElement("li");
     li.classList.add("task");
     li.classList.add("reward-li");
@@ -34,18 +41,22 @@ function createRewardHTML(task) {
 
 
 
+    // This is a container element so that the "completions" number
+    // can be left aligned, while everything else (the "non completion section")
+    // may be right aligned
     let non_completion_section = tag("div","non-completion", ``);
 
-    let title = tag("span","task-title", `${task.name} - $${task.value}`);
+    let title = tag("span","task-title", `${reward.name} - $${reward.value}`);
     let del = tag("button","task-delete", ``);
-    let description = tag("div", "task-description", task.description);
+    let description = tag("div", "task-description", reward.description);
 
-    let completions = tag("div", "reward-completions", task.completions);
+    let completions = tag("div", "reward-completions", reward.completions);
 
     let balElement = document.getElementById("balance");
     let clientBalance = Number(balElement.textContent.substring(1));
 
-    if (task.value > clientBalance) {
+    if (reward.value > clientBalance) {
+        // Add more style for rewards which cannot be afforded
         rewardClickable.classList.add("reward-expensive")
         completions.classList.add("reward-text-light");
     }
@@ -56,25 +67,31 @@ function createRewardHTML(task) {
     }
 
 
+    // Clicking on the reward completes it
     rewardClickable.addEventListener("click", async () => {
-
+    
+        // We get the last known balance from the client
         let clientBalance = Number(balElement.textContent.substring(1));
 
-        if (clientBalance >= task.value) {
-            await completeReward(task.rewardID);
+        // Test whether the user can afford it before purchase 
+        if (clientBalance >= reward.value) {
+            await completeReward(reward.rewardID);
         }
         else {
             send_notification("You cannot afford this reward!");
         }
+
         hydrateRewards();
     } );
+    // Delete button function
     del.addEventListener("click", async () => {
 
-        await deleteReward(task.rewardID);
+        await deleteReward(reward.rewardID);
 
         hydrateRewards();
     } );
 
+    // X svg for delete button
     let del_img = document.createElement("img");
     del_img.classList.add("x-img");
     del_img.src = "/svg/delete.svg";
@@ -91,14 +108,19 @@ function createRewardHTML(task) {
     non_completion_section.appendChild(title);
     non_completion_section.appendChild(description);
 
+
     rewardClickable.appendChild(non_completion_section);
     rewardClickable.appendChild(completions);
+
     li.appendChild(rewardClickable);
     li.appendChild(del);
 
     return li;
 }
 
+/**
+ * Callback function for completing a reward
+ */
 async function completeReward(id) { 
 
     const res = await fetch(`/api/v1/rewards/${id}/complete`, {
@@ -110,14 +132,19 @@ async function completeReward(id) {
         const out = await res.json();
         let balElement = document.getElementById("balance");
 
+        let accountBalance = document.getElementById("account-balance");
         send_notification("Reward Redeemed!");
-        console.log(out);
+
+        // We don't have to do an entire request to update the reward
+        // completion, we get get the clientBalance from the element
+        // and add the corresponding value
         let clientBalance = Number(balElement.textContent.substring(1));
 
         clientBalance -= out.old_reward.value;
 
+        // Balance is represented twice in the website
         balElement.innerHTML = "$" + clientBalance;
-        account_balance.textContent = "$" + clientBalance;
+        accountBalance.textContent = "$" + clientBalance;
     }
     else {
 
@@ -126,6 +153,9 @@ async function completeReward(id) {
     }
 }
 
+/**
+ * Callback function for deleting a reward
+*/
 async function deleteReward(id) { 
 
     const res = await fetch(`/api/v1/rewards/${id}`, {
@@ -135,7 +165,9 @@ async function deleteReward(id) {
 
     if (res.ok) {
         const out = await res.json();
+        // We give the user an opportunity to undo 
         send_notification("Reward deleted", undoRewardDeletion);
+        // Add deleted rewardID 
         rewardDeletedStack.push(out.old_reward.rewardID);
     }
     else {
@@ -144,6 +176,9 @@ async function deleteReward(id) {
     }
 }
 
+/**
+ * Function for undoing a deeted reward from the rewardDeletedStack
+*/
 async function undoRewardDeletion() {
 
     let last_deleted_id = rewardDeletedStack.pop();
@@ -152,6 +187,10 @@ async function undoRewardDeletion() {
     }
 }
 
+/**
+ * Function for restoring a reward using the /rewards/id/restore PUT API 
+ * endpoint
+ */
 async function restoreReward(id) { 
 
     const res = await fetch(`/api/v1/rewards/${id}/restore`, {
@@ -179,6 +218,7 @@ rewardform.addEventListener('submit', async (e) => {
     e.preventDefault(); // stop normal form submission
     rewardErrorMessage.textContent = ''; // reset error
 
+    // We get the JSON body info from the form inputs
     const formData = {
         name: document.getElementById('rewardname').value,
         description: document.getElementById('rewarddesc').value,
@@ -196,22 +236,21 @@ rewardform.addEventListener('submit', async (e) => {
 
     if (!response.ok) {
         const err = await response.json();
-        rewardErrorMessage.textContent = err.error || "Task Creation failed";
+        rewardErrorMessage.textContent = err.error || "Reward Creation failed";
         return;
     }
 
     const result = await response.json();
-    console.log(result);
 
     if (result.success) {
+        // We added a reward, now we refresh to see them
         hydrateRewards();
     }
     else {
-        rewardErrorMessage.textContent = result.message || "Failed to Create Task";
+        rewardErrorMessage.textContent = result.message || "Reward Creation failed";
 
     }
 
 
 
-    console.log(result);
 });
