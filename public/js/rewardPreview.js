@@ -57,16 +57,20 @@ function createRewardHTML(task) {
 
 
     rewardClickable.addEventListener("click", async () => {
-        await completeReward(task.rewardID);
+
+        let clientBalance = Number(balElement.textContent.substring(1));
+
+        if (clientBalance >= task.value) {
+            await completeReward(task.rewardID);
+        }
+        else {
+            send_notification("You cannot afford this reward!");
+        }
         hydrateRewards();
     } );
     del.addEventListener("click", async () => {
-        let userConfirm = confirm("Are you sure you want to delete this reward? This action is not reversible.");
 
-        if (userConfirm) {
-
-            await deleteReward(task.rewardID);
-        }
+        await deleteReward(task.rewardID);
 
         hydrateRewards();
     } );

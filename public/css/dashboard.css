@@ -131,7 +131,7 @@ h1, h2 {
 }
 
 .notification-popup {
-    display: block;
+    height: auto;
     background-color: rgb(0,0,0,0); /* Fallback color */
     margin: 0;
 }

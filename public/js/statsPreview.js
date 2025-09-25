@@ -30,7 +30,7 @@ async function hydrateDailyEarnings() {
             // We convert the date into the corresponding array index
             let days_between = Math.round((today - stat_date) / one_day);
             let index = 14 - days_between;
-            bar_data[index] = Math.abs(stat.total);
+            bar_data[index] = stat.total;
             //console.log(`${stat_date} - ${index}`); 
         })
         console.log(bar_data);
@@ -40,7 +40,7 @@ async function hydrateDailyEarnings() {
             // The corresponding date
             let date = new Date(today - one_day * (13 - i));
             let bar = createBarHTML(
-                bar_data[i] / max, 
+                Math.max(bar_data[i],0) / max, 
                 14, 
                 `${date.getMonth()+1}/${date.getDate()}`, 
                 bar_data[i],

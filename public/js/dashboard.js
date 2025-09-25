@@ -98,7 +98,10 @@ function send_notification(message, button_callback=null) {
 
     console.log(button_callback);
     if (button_callback != null) {
-        notification_link.addEventListener("click", button_callback);
+        notification_link.addEventListener("click", () => { 
+            button_callback();
+            close_notification();
+        });
         notification_link.style.display = "inline";
     }
     else {

@@ -9,21 +9,28 @@
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="description" content="" />
         <link rel="icon" href="favicon.png">
+        <link rel="stylesheet" href="/css/login.css">
     </head>
     <body>
-        <h2>Login Form</h2>
-        <form id="loginForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username"><br><br>
+        <main>
+            <h1 class="graveller"> Graveller </h1>
+            <h2> The gamified to-do list </h2>
+            <section class="main-content rounded">
+                <h2>Login Form</h2>
+                <form id="loginForm" >
+                    <label for="username">Username:</label>
+                    <input required type="text" id="username" name="username" class="textinput"><br>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password"><br><br>
+                    <label for="password">Password:</label>
+                    <input required type="password" id="password" name="password" class="textinput"><br>
 
-            <button type="submit">Login</button>
-        </form>
-        <p id="errorMessage"> </p>
+                    <button type="submit" class="login-button">Login</button>
+                </form>
+                <p id="errorMessage"> </p>
+                <a href="/register.html"> Don't have an account? Sign up! </a>
+            </section>
+        </main>
 
-        <a href="/register.html"> Don't have an account? Sign up! </a>
 
     </body>
     <script src="/js/login.js"></script>

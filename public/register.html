@@ -10,24 +10,31 @@
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="description" content="" />
         <link rel="icon" href="favicon.png">
+        <link rel="stylesheet" href="/css/login.css">
     </head>
     <body>
-        <h2>Register Form</h2>
-        <form id="registerForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username"><br><br>
+        <main>
+            <h1 class="graveller"> Graveller </h1>
+            <h2> The gamified to-do list </h2>
+            <section class="main-content rounded">
+                <h2>Register Form</h2>
+                <form id="registerForm">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" class="textinput"><br>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password"><br><br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" class="textinput"><br>
 
-            <label for="confirm-password">Confirm Password:</label>
-            <input type="password" id="confirm-password" name="confirm-password"><br><br>
+                    <label for="confirm-password">Confirm Password:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" class="textinput"><br>
 
-            <button type="submit">Register</button>
-        </form>
-        <p id="errorMessage"> </p>
+                    <button type="submit" class="login-button">Register</button>
+                </form>
+                <a href="/login.html"> Already have an account? log in! </a>
+                <p id="errorMessage"> </p>
+            </section>
 
-        <a href="/login.html"> Already have an account? log in! </a>
+        </main>
 
 
     </body>
