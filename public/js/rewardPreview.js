@@ -37,7 +37,7 @@ function createRewardHTML(task) {
     let non_completion_section = tag("div","non-completion", ``);
 
     let title = tag("span","task-title", `${task.name} - $${task.value}`);
-    let del = tag("button","task-delete", `X`);
+    let del = tag("button","task-delete", ``);
     let description = tag("div", "task-description", task.description);
 
     let completions = tag("div", "reward-completions", task.completions);
@@ -75,6 +75,10 @@ function createRewardHTML(task) {
         hydrateRewards();
     } );
 
+    let del_img = document.createElement("img");
+    del_img.classList.add("x-img");
+    del_img.src = "/svg/delete.svg";
+    del.appendChild(del_img);
 
     // trophy
     let img = document.createElement("img");

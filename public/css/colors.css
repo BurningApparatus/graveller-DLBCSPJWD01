@@ -1,0 +1,32 @@
+:root {
+    --bg-primary: #faf4ed;
+    --bg-surface: #fffaf3;
+    --bg-focus: #cecacd;
+    --bg-overlay: #f2e9e1;
+
+    --fg-primary: #575279;
+    --fg-disable: #9893a5;
+
+    --dark-blue: #286983;
+    --blue: #56949f;
+
+    --white: #faf4ed;
+    --bg-primary-transparent: #faf4edaa;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #191724;
+    --bg-surface: #1f1d2e;
+    --bg-overlay: #26233a;
+
+    --bg-focus: #524f67;
+    --fg-primary: #e0def4;
+    --fg-disable: #6e6a86;
+
+    --dark-blue: #31748f;
+    --blue: #9ccfd8;
+    
+    --white: #e0def4;
+    --bg-primary-transparent: #e0def4aa;
+}
+

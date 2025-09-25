@@ -8,18 +8,17 @@
 
 
 .task-click:hover {
-    background-color: #dfdad9;
+    background-color: var(--bg-focus);
 }
 .task-delete:hover {
-    background-color: #b4637a;
+    background-color: var(--dark-blue);
 }
 .task-refresh:hover {
-    background-color: #286983;
+    background-color: var(--dark-blue);
 }
 .task-title {
     font-family: Georgia, serif;
     font-size: 1.6em;
-    color: #575279;
     border: none;
     background-color: inherit;
 }
@@ -27,7 +26,7 @@
 .task-description {
     padding-top: 1em;
 
-    color: #797593;
+    color: var(--fg-disable);
     font-size: 1.1em;
 }
 
@@ -40,8 +39,8 @@
     
 }
 .task-click {
-    background-color: #f2e9e1; 
-    color: #575279;
+    background-color: var(--bg-overlay); 
+    color: var(--fg-primary);
     width: 100%;
     margin: 0;
     text-align: left;
@@ -50,13 +49,17 @@
     padding: 1em;
 }
 .task-delete {
-    background-color: #d7827e; 
+    background-color: var(--blue); 
     border: none;
 }
 .task-refresh {
-    background-color: #56949f; 
+    background-color: var(--blue); 
     border: none;
-
+}
+.refresh-img, .x-img{
+    width: 1em;
+    height: 1em;
+    fill: blue;
 }
 
 
@@ -66,5 +69,5 @@
 }
 .task-done {
     text-decoration: line-through;
-    color: #9893a5;
+    color: var(--fg-disable);
 }

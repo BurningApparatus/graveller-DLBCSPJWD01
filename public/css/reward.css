@@ -1,28 +1,29 @@
 
 
 .reward-click {
-    background-color: #286983;
+    background-color: var(--dark-blue);
     display: flex;
     /*background-color: inherit;*/
     height: 10%;
 }
 .reward-expensive {
-    background-color: #f2e9e1; 
+    background-color: var(--fg-disable); 
 }
 .reward-click:hover {
-    background-color: #907aa9;
+    background-color: var(--blue);
 }
 
 .reward-text {
-    color: #faf4ed;
+    color: var(--white);
 }
 .reward-completions {
     font-size: 5vh;    
     font-family: Georgia, 'Times New Roman', Times, serif;
-    color: #faf4edaa;
+    color: var(--bg-primary-transparent);
 }
 .reward-text-light {
-    color: #575279aa;
+    /*color: #575279aa;*/
+    color: var(--bg-primary);
 }
 .trophy-img {
     width: 5%;

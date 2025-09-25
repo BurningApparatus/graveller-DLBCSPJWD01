@@ -75,8 +75,20 @@ function createTaskHTML(task) {
     let taskClickable = tag("button", "task-click", "");
 
     let title = tag("span","task-title", `${task.name} - $${task.value}`);
-    let del = tag("button","task-delete", `X`);
-    let refresh = tag("button","task-refresh", `3`);
+    let del = tag("button","task-delete", ``);
+
+    let x_img = document.createElement("img");
+    x_img.classList.add("x-img");
+    x_img.src = "/svg/delete.svg";
+
+    let r_img = document.createElement("img");
+    r_img.classList.add("refresh-img");
+    r_img.src = "/svg/refresh.svg";
+
+    let refresh = tag("button","task-refresh", ``);
+    refresh.appendChild(r_img);
+
+    del.appendChild(x_img);
     let description = tag("div", "task-description", task.description);
     let due = tag("div", "task-due", formatter.format(dueDate));
 

@@ -1,16 +1,16 @@
 body {
     font-family: Arial, sans-serif;
-    color: #575279;
+    color: var(--fg-primary);
 }
 html,body { 
     height:100%; 
     margin: 0;
-    background-color: #faf4ed;
+    background-color: var(--bg-primary);
 }
 
 .heading {
-    /*background-color: #faf4ed;*/
-    background-color: #fffaf3;
+    /*background-color: var(--bg-primary);*/
+    background-color: var(--bg-surface);
     padding: 0.2em 1em;
     display: flex;
     justify-content: space-between;
@@ -84,33 +84,33 @@ h1, h2 {
     border: none;
     border-bottom: dotted;
     border-width: 2px;
-    border-color: #575279;
+    border-color: var(--fg-primary);
 }
 .dark-input {
-    border-color: #faf4ed;
+    border-color: var(--bg-primary);
 }
 .textinput:hover {
     border-bottom: solid;
 }
 .textinput:focus {
-    background-color: #cecacd;
+    background-color: var(--bg-focus);
     border-bottom: solid;
     outline:none;
 }
 .dark-input:focus {
-    background-color: #286983;
+    background-color: var(--dark-blue);
     border-bottom: solid;
     outline:none
 }
 #taskForm, #rewardForm {
-    background-color: #f2e9e1; 
+    background-color: var(--bg-overlay); 
     padding: 1em;
     width: 50%;
     margin: 15% auto;
 }
 
 #notification {
-    background-color: #f2e9e1; 
+    background-color: var(--bg-overlay); 
     padding: 1em;
     width: 50%;
     margin: 1% auto;
@@ -148,14 +148,22 @@ h1, h2 {
 }
 
 .dot-button { 
-    background-color: #f2e9e1; 
+    background-color: var(--bg-overlay); 
     border: dotted;
     border-width: 2px;
-    border-color: #575279;
+    border-color: var(--fg-primary);
+    color: inherit;
+}
+.icon-button { 
+    background-color: var(--blue); 
+    border: none;
+    border-width: 2px;
+    border-color: var(--fg-primary);
+    color: inherit;
 }
 
 .dot-button:hover {
-    background-color: #dfdad9;
+    background-color: var(--bg-focus);
     border: solid;
 }
 
@@ -179,11 +187,11 @@ long-input:hover {
 }
 
 .error-message {
-    color: #b4637a;
+    color: var(--red);
 }
 
 #account-display {
-    background-color: #f2e9e1; 
+    background-color: var(--bg-overlay); 
 
     padding: 1em;
     width: 20vw;
@@ -191,14 +199,14 @@ long-input:hover {
 }
 
 .stats {
-    background-color: #fffaf3;
+    background-color: var(--bg-surface);
     /*display: flex;
     flex-direction: column;
     justify-content: flex-end;*/
     flex: 1 1 auto;
 }
 .rewards {
-    background-color: #fffaf3;
+    background-color: var(--bg-surface);
     height: 70%;
     width: 100%;
     max-width: 100%;
@@ -206,12 +214,16 @@ long-input:hover {
     margin-top: 0.7em;
 }
 
+.heading-info {
+    display: flex;
+    align-items: center;
+}
 .task-preview {
-    background-color: #fffaf3;
+    background-color: var(--bg-surface);
     /*
     border: solid;
     border-width: 1px;
-    border-color: #575279;
+    border-color: var(--fg-primary);
     */
     margin: 0.7em;
     /*display: flex;*/
@@ -226,8 +238,8 @@ long-input:hover {
     flex-grow: 1;
 }
 #rewardForm {
-    background-color: #286983;
-    color: #faf4ed;
+    background-color: var(--dark-blue);
+    color: var(--white);
 }
 
 @media (min-height: 800px) {

@@ -23,15 +23,16 @@
 }
 
 .bar {
-    background-color: #b4637a;
+    background-color: var(--dark-blue);
 
     width: 100%;
 }
 .bar-highlight {
-    background-color: #286983;
+    background-color: var(--blue);
 }
 .stats-header {
     position: absolute;
+    background-color: var(--bg-overlay);
 }
 .bar-label, .bar-quantity {
     font-size: 1em;

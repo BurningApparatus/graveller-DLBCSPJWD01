@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="description" content="" />
         <link rel="icon" href="favicon.png">
+        <link rel="stylesheet" href="/css/colors.css">
         <link rel="stylesheet" href="/css/task.css">
         <link rel="stylesheet" href="/css/reward.css">
         <link rel="stylesheet" href="/css/stats.css">
@@ -18,8 +19,14 @@
         <main>
             <section class="heading rounded">
                 <h1 id="greeting"> Greetings, </h1>
-                <p id="balance"> $10 </p>
-                <button class="dot-button" id="account-popup-button" onclick="open_account_popup()"> Account </button>
+                <div class="heading-info">
+                    <span id="balance"> $10 </span>
+                    <button class="icon-button" id="dark-button" onclick="toggleDark()">  
+                        <img src="/svg/moon.svg" style="width: 2em"/> </button>
+                    </button>
+                    <button class="icon-button" id="account-popup-button" onclick="open_account_popup()"> 
+                        <img src="/svg/user.svg" style="width: 2em"/> </button>
+                </div>
 
             </section>
 
@@ -119,6 +126,7 @@
     </body>
     
     <script src="/js/dashboard.js"> </script>
+    <script src="/js/light.js"> </script>
     <script src="/js/taskPreview.js"> </script>
     <script src="/js/rewardPreview.js"> </script>
     <script src="/js/statsPreview.js"> </script>
