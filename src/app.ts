@@ -1,5 +1,6 @@
 // Import the express in typescript file
 import express from 'express';
+import 'dotenv/config'
 
 
 import userRoutes from './routes/userRoutes'
@@ -22,9 +23,9 @@ const app: express.Application = express();
 app.use(express.json());
 
 app.use(session({
-  secret: 'super secret', // TODO: change to use env variable
-  resave: false,
-  saveUninitialized: true
+    secret: process.env.GRAVELLER_SESSION_SECRET || 'secret', 
+    resave: false,
+    saveUninitialized: true,
 }));
 
 // Tell 'express-session' to store user data in the cookie itself

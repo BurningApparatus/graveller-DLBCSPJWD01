@@ -12,6 +12,8 @@
 
     --white: #faf4ed;
     --bg-primary-transparent: #faf4edaa;
+
+    --landing-bg: url("/img/graveller-light.png");
 }
 
 [data-theme="dark"] {
@@ -28,5 +30,6 @@
     
     --white: #e0def4;
     --bg-primary-transparent: #e0def4aa;
+    --landing-bg: url("/img/graveller-dark.png");
 }
 

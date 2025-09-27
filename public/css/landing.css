@@ -1,12 +1,12 @@
 
 body {
     font-family: Arial, sans-serif;
-    color: #575279;
+    color: var(--fg-primary);
 }
 html,body { 
     height:100%; 
     margin: 0;
-    background-color: #faf4ed;
+    background-color: var(--bg-primary);
 
 }
 
@@ -21,13 +21,13 @@ main {
     align-items: center;
     justify-content: center;
     height: 100%;
-    background-image: url("/img/graveller1.png");
+    background-image: var(--landing-bg);
     background-position: center; 
 }
 
 .rounded {
     box-shadow: -1px 1px 12px -5px rgba(0,0,0,0.75);
-    background-color: #faf4ed;
+    background-color: var(--bg-primary);
     border-radius: 0.5em;
 }
 
@@ -42,4 +42,12 @@ main {
 a {
     font-size: 1.5em;
     margin-bottom: 0.7em;
+    color: var(--dark-blue);
+}
+.icon-button { 
+    background-color: var(--blue); 
+    border: none;
+    border-width: 2px;
+    border-color: var(--fg-primary);
+    color: inherit;
 }

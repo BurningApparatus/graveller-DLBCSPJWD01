@@ -1,25 +1,19 @@
 
 body {
-body {
     font-family: Arial, sans-serif;
-    color: #575279;
+    color: var(--fg-primary);
 }
 html,body { 
     height:100%; 
     margin: 0;
-    background-color: #faf4ed;
-}
+    background-color: var(--bg-primary);
     font-family: Arial, sans-serif;
-    color: #575279;
-}
-html,body { 
-    height:100%; 
-    margin: 0;
-    background-color: #faf4ed;
+    color: var(--fg-primary);
 }
 
 .rounded {
     box-shadow: -1px 1px 12px -5px rgba(0,0,0,0.75);
+    background-color: var(--bg-surface);
     border-radius: 0.5em;
 }
 .main-content {
@@ -42,8 +36,10 @@ main {
 }
 .textinput {
     border-width: 2px;
-    border-color: #575279;
+    border-color: var(--fg-primary);
     font-size: 1.1em;
+    background-color: var(--bg-surface);
+    color: inherit;
 }
 .graveller {
     font-size: 3em;
@@ -53,11 +49,23 @@ main {
     width: 100%;
     border: dotted;
     font-size: 1.1em;
-    background-color: #faf4ed;
+    background-color: var(--bg-primary);
+    color: inherit;
+    
 }
 .login-button:hover {
-    background-color: #cecacd;
+    background-color: var(--bg-focus);
 }
 
-#loginForm {
+a {
+    color: var(--blue);
+}
+
+.icon-button { 
+    position: absolute;
+    background-color: var(--blue); 
+    border: none;
+    border-width: 2px;
+    border-color: var(--fg-primary);
+    color: inherit;
 }
