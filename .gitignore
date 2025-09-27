@@ -1,0 +1,10 @@
+# exclude node modules
+node_modules/
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# and the database file
+graveller.db
