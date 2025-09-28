@@ -3,7 +3,7 @@
  */
 
 import { registerUser, validateUserRegister, loginUser, logoutUser, getUserInfo, deleteUser, getUserStats} from '../controllers/userController'
-import { requireAuth } from '../controllers/taskController'
+import { requireAuth } from '../utils/middleware'
 import { Router } from 'express'
 
 const router = Router();

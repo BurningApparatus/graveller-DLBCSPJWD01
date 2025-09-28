@@ -3,7 +3,9 @@
  */
 
 import { Router } from 'express'
-import { requireAuth, getRewards, validateNewReward, newReward, validateID, getRewardByID, completeReward, validateUpdateReward, updateReward, deleteReward, restoreReward } from '../controllers/rewardController'
+import { getRewards, validateNewReward, newReward, getRewardByID, completeReward, validateUpdateReward, updateReward, deleteReward, restoreReward } from '../controllers/rewardController'
+
+import { requireAuth, validateID } from '../utils/middleware'
 
 const router = Router();
 

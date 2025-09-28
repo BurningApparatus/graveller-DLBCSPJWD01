@@ -2,6 +2,7 @@
 import { userTable, transactionTable } from '../db/sqlite3/db'
 import { SqliteError } from "better-sqlite3";
 
+import { log, warn, error } from '../utils/logging'
 
 import { Request, Response } from "express";
 import bcrypt from "bcrypt"
@@ -43,7 +44,7 @@ export async function registerUser(req: Request, res: Response) {
         // we save the user session cookie (to log in)
         req.session.user = newUser;
         req.session.save(err => {
-            if (err) console.error(err)
+            if (err) error(err)
             res.json({ success: true, message: "User registered!", user: newUser });
         })
     }
@@ -59,6 +60,8 @@ export async function registerUser(req: Request, res: Response) {
 
             }
         }
+        error(err);
+        return res.status(500).json({ error: `Internal Database Error` });
 
     }
 }

@@ -1,6 +1,8 @@
 import { Reward } from '../../models/rewardModel'
 import { Database } from 'better-sqlite3'
 
+import { log, error } from '../../utils/logging'
+
 /**
  * Safely Converts an row with any type into a type that typescript understands.
  * 
@@ -86,7 +88,6 @@ export class SQLiteRewardTable {
             0, // deleted also defaults to 0.
         );
 
-        console.log(info);
 
 
         // Returning the rowID of the newly inserted object to be returned
@@ -144,6 +145,7 @@ export class SQLiteRewardTable {
     }
 
     /**
+     *
      * Updates the task of a given ID with new Row Data. 
      *
      * @param id The id of the task to change

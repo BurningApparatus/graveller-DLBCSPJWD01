@@ -12,8 +12,10 @@ import { SQLiteTaskTable } from "./taskTable"
 import { SQLiteRewardTable } from "./rewardTable"
 import { SQLiteTransactionTable } from "./transactionTable"
 
+import { log, error } from '../../utils/logging'
+
 // Create the one database connection which is used by all tables.
-export const db = new DatabaseConstructor('./graveller.db', { verbose: console.log });
+export const db = new DatabaseConstructor('./graveller.db', { verbose: log });
 
 
 export const userTable = new SQLiteUserTable(db);

@@ -79,7 +79,6 @@ export class SQLiteTaskTable {
      * The taskID property in the provided object is ignored in this function
      */
     async createTask(task: Task): Promise<Task> {
-        console.log(task);
 
 
 
@@ -95,7 +94,6 @@ export class SQLiteTaskTable {
             0,
         );
 
-        console.log(info);
 
 
         let rowID = info.lastInsertRowid;

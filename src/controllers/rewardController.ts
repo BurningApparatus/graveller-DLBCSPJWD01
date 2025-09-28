@@ -2,6 +2,8 @@
 
 import { rewardTable, userTable, transactionTable } from '../db/sqlite3/db'
 
+import { log, warn, error } from '../utils/logging'
+
 import { Request, Response } from "express"
 import { SqliteError } from "better-sqlite3";
 
@@ -50,36 +52,6 @@ export function validateUpdateReward(req: Request, res: Response, next: Function
     next();
 }
 
-/**
- * Middleware function which ensures that a user has a valid session token
- */
-export function requireAuth(req: Request, res: Response, next: Function) {
-
-    let user = req.session.user;
-    console.log(req.session);
-    if (!user) {
-        return res.status(401).json({ error: `You are not logged in.` });
-    }
-    next();
-}
-
-
-/**
- * Middleware function which ensures that the :id field in dynamic routes is a valid Integer
- * @remarks 
- * This function does NOT ensure that the :id belongs to any one user or exists at all 
- * in the database
- */
-export function validateID(req: Request, res: Response, next: Function) {
-    const rewardID = parseInt(req.params.id, 10);
-    if (isNaN(rewardID)) {
-        return res.status(400).json({ error: "Reward ID must be a number." });
-    }
-    req.params.id = rewardID.toString(); // store parsed ID back
-    next();
-}
-
-
 /** 
  * POST Route for delcaring a new Reward. 
  * Assumes auth and validateNewReward middleware are passed.
@@ -106,6 +78,7 @@ export async function newReward(req: Request, res: Response) {
             completions: 0,
             deleted: false,
         });
+        log("New Reward", newReward);
         res.json({ success: true, message: "Reward added", reward: {
             rewardID: newReward.rewardID,
             name: name,
@@ -115,6 +88,8 @@ export async function newReward(req: Request, res: Response) {
         } });
     }
     catch (err){
+        
+        error(err);
         if (err instanceof SqliteError) {
                 return res.status(500).json({ 
                     error: `Database error ${err.code}: ${err.message}`
@@ -208,12 +183,12 @@ export async function completeReward(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err)
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
             }); 
         }
-        console.log(err);
         return res.status(500).json({ 
             error: `Internal Server error`
         }); 
@@ -243,6 +218,7 @@ export async function updateReward(req: Request, res: Response) {
             old_reward.value = value;
             old_reward.completions = completions;
             rewardTable.updateReward(rewardID, old_reward);
+            log("Update Reward", old_reward);
             return res.status(200).json({ message: "Reward updated successfully.", old_reward });
         }
         else {
@@ -250,12 +226,13 @@ export async function updateReward(req: Request, res: Response) {
         }
     }
     catch (err){
+        
+        error(err)
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
             }); 
         }
-        console.log(err);
         return res.status(500).json({ 
             error: `Internal Server error`
         }); 
@@ -279,6 +256,7 @@ export async function deleteReward(req: Request, res: Response) {
         let old_reward = await rewardTable.getRewardForUser(user?.userID || -1, rewardID);
         if (old_reward) {
             rewardTable.deleteReward(rewardID);
+            log(old_reward);
             return res.status(200).json({ message: "Reward deleted successfully.", old_reward });
         }
         else {
@@ -286,6 +264,7 @@ export async function deleteReward(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err);
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
@@ -313,6 +292,7 @@ export async function restoreReward(req: Request, res: Response) {
         // even though the data besides the id is not strictly necessary for the deletion
         let old_reward = await rewardTable.getRewardForUser(user?.userID || -1, rewardID, true);
         if (old_reward) {
+            log("Restored: ", old_reward)
             rewardTable.restoreReward(rewardID);
             return res.status(200).json({ message: "Reward restored successfully.", old_reward });
         }
@@ -321,6 +301,7 @@ export async function restoreReward(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err);
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
@@ -353,13 +334,19 @@ export async function getRewardByID(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err);
         if (err instanceof SqliteError) {
-                return res.status(500).json({ 
-                    error: `Database error ${err.code}: ${err.message}`
-                }); 
-
-            }
+            return res.status(500).json({ 
+                error: `Database error ${err.code}: ${err.message}`
+            }); 
         }
+        else {
+            return res.status(500).json({ 
+                error: `Internal Server error`
+            }); 
+
+        }
+    }
 
 }
 

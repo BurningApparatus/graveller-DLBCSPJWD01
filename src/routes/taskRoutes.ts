@@ -3,8 +3,9 @@
  */
 
 import { Router } from 'express'
-import { validateNewTask, newTask, getTasks, getTaskByID, requireAuth, validateID, completeTask, uncompleteTask, updateTask, validateTaskUpdate, deleteTask, refreshTask, restoreTask } from '../controllers/taskController'
+import { validateNewTask, newTask, getTasks, getTaskByID,  completeTask, uncompleteTask, updateTask, validateTaskUpdate, deleteTask, refreshTask, restoreTask } from '../controllers/taskController'
 
+import { requireAuth, validateID } from '../utils/middleware'
 const router = Router();
 
 router.get("/", requireAuth, getTasks)

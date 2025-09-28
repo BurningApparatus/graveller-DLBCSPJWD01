@@ -1,6 +1,8 @@
 
 import { taskTable, userTable, transactionTable } from '../db/sqlite3/db'
 
+import { log, warn, error } from '../utils/logging'
+
 import { Request, Response } from "express"
 import { SqliteError } from "better-sqlite3";
 
@@ -56,33 +58,6 @@ export function validateTaskUpdate(req: Request, res: Response, next: Function) 
     // the assurance that all fields are present and correct.
     next();
 }
-export function requireAuth(req: Request, res: Response, next: Function) {
-
-    // The session cookie stores a User Object if the user is logged in.
-    let user = req.session.user;
-    console.log(req.session);
-
-    // Essentially, this middleware only serves to ensure that this cookie exists
-    // in the browser.
-    if (!user) {
-        return res.status(401).json({ error: `You are not logged in.` });
-    }
-    next();
-}
-
-export function validateID(req: Request, res: Response, next: Function) {
-
-    // Get the :id value from the request and attempt to parse it to an Integer
-    const taskID = parseInt(req.params.id, 10);
-    // If it isn't valid, we return an error
-    if (isNaN(taskID)) {
-        return res.status(400).json({ error: "Task ID must be a number." });
-    }
-    // store parsed ID back
-    req.params.id = taskID.toString(); 
-    next();
-}
-
 
 
 /** 
@@ -101,7 +76,7 @@ export async function newTask(req: Request, res: Response) {
     // The try catch is necessary as all database operations may return SQLite errors
     try {
         // We create a task using the relevant parameters
-        let _newTask = await taskTable.createTask({
+        let newTask = await taskTable.createTask({
             taskID: -1,
             userID: user?.userID || -1, // This is fine because of the requireAuth middleware
             name: name,
@@ -112,6 +87,7 @@ export async function newTask(req: Request, res: Response) {
             completed: false,
             deleted: false,
         });
+        log("New task", newTask);
         // We send back useful information to the client
         res.json({ success: true, message: "Task added", task: {
             name: name,
@@ -122,17 +98,17 @@ export async function newTask(req: Request, res: Response) {
         } });
     }
     catch (err){
+        error(err);
         // the better-sqlite3 library returns SqliteError
         if (err instanceof SqliteError) {
-                return res.status(500).json({ 
-                    error: `Database error ${err.code}: ${err.message}`
-                }); 
+            return res.status(500).json({ 
+                error: `Database error ${err.code}: ${err.message}`
+            }); 
         }
         else {
-            console.log(err)
-                return res.status(500).json({ 
-                    error: `Internal Server error`
-                }); 
+            return res.status(500).json({ 
+                error: `Internal Server error`
+            }); 
 
         }
     }
@@ -150,7 +126,6 @@ export async function getTasks(req: Request, res: Response) {
     // The try catch is necessary as all database operations may return SQLite errors
     try {
         let tasks = await taskTable.getTasksForUser(user?.userID || -1);
-        console.log(tasks);
         // getTasksForUser returns an array of javascript objects, which
         // can be converted to JSON.
         res.json(tasks);
@@ -217,12 +192,12 @@ export async function completeTask(req: Request, res: Response) {
         }
     }
     catch (err){
+        log(err);
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
             }); 
         }
-        console.log(err);
         return res.status(500).json({ 
             error: `Internal Server error`
         }); 
@@ -282,6 +257,7 @@ export async function uncompleteTask(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err);
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
@@ -323,6 +299,7 @@ export async function refreshTask(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err);
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
@@ -366,12 +343,12 @@ export async function updateTask(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err);
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
             }); 
         }
-        console.log(err);
         return res.status(500).json({ 
             error: `Internal Server error`
         }); 
@@ -403,6 +380,7 @@ export async function deleteTask(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err);
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
@@ -438,6 +416,7 @@ export async function restoreTask(req: Request, res: Response) {
         }
     }
     catch (err){
+        error(err);
         if (err instanceof SqliteError) {
             return res.status(500).json({ 
                 error: `Database error ${err.code}: ${err.message}`
@@ -468,16 +447,18 @@ export async function getTaskByID(req: Request, res: Response) {
         }
     }
     catch (err){
-        if (err instanceof SqliteError) {
-                return res.status(500).json({ 
-                    error: `Database error ${err.code}: ${err.message}`
-                }); 
 
-            }
+        error(err);
+        if (err instanceof SqliteError) {
+            return res.status(500).json({ 
+                error: `Database error ${err.code}: ${err.message}`
+            }); 
+
         }
         return res.status(500).json({ 
             error: `Internal Server error`
         }); 
+    }
 
 }
 

@@ -69,7 +69,6 @@ export class SQLiteTransactionTable {
      * the controller function
      */
     async createTransaction(transaction: Transaction): Promise<Transaction> {
-        console.log(transaction);
 
 
 
@@ -89,7 +88,6 @@ export class SQLiteTransactionTable {
             stripped_date.getTime(),
         );
 
-        console.log(info);
 
 
         let rowID = info.lastInsertRowid;
