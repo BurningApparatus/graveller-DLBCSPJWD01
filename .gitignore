@@ -8,3 +8,6 @@ node_modules/
 
 # and the database file
 graveller.db
+
+# compiled javascript is not distributed
+dist/
