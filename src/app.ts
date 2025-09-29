@@ -6,10 +6,20 @@ import 'dotenv/config'
 import userRoutes from './routes/userRoutes'
 import taskRoutes from './routes/taskRoutes'
 import rewardRoutes from './routes/rewardRoutes'
-import { userTable, taskTable, rewardTable, transactionTable } from './db/sqlite3/db'
+
+import { userTable, taskTable, rewardTable, transactionTable, db } from './db/sqlite3/db'
 import { User } from './models/userModel'
 
 import session from 'express-session'
+
+// Tell 'express-session' to store user data in the cookie itself
+declare module "express-session" {
+  interface SessionData {
+    user: User;
+  }
+}
+import { BetterSQliteSessionStore } from './db/sqlite3/sessionStore'
+
 import path from 'path'
 
 // Initialize database tables if they don't already exist
@@ -23,17 +33,14 @@ const app: express.Application = express();
 app.use(express.json());
 
 app.use(session({
+    store: new BetterSQliteSessionStore({
+        client: db,
+    }),
     secret: process.env.GRAVELLER_SESSION_SECRET || 'secret', 
     resave: false,
     saveUninitialized: true,
 }));
 
-// Tell 'express-session' to store user data in the cookie itself
-declare module "express-session" {
-  interface SessionData {
-    user: User;
-  }
-}
 
 // Serve frontend pages statically
 app.use(express.static(path.join(__dirname, "../public")));
