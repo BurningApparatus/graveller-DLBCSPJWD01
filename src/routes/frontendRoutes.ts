@@ -1,6 +1,6 @@
 
 /**
- * Defines the routes for the path /api/v1/rewards
+ * Defines the routes for the root path (serving html)
  */
 
 import { Router } from 'express'

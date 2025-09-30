@@ -3,6 +3,7 @@ import express from 'express';
 import 'dotenv/config'
 
 
+import authRoutes from './routes/authRoutes'
 import userRoutes from './routes/userRoutes'
 import taskRoutes from './routes/taskRoutes'
 import rewardRoutes from './routes/rewardRoutes'
@@ -49,7 +50,8 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 
 // Use all routers
-app.use('/api/v1/auth', userRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/tasks', taskRoutes);
 app.use('/api/v1/rewards', rewardRoutes);
 app.use('/', frontendRoutes);

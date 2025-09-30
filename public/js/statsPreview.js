@@ -13,7 +13,7 @@ async function hydrateDailyEarnings() {
 
     // This gets an array containing a summary of earnings for the 
     // past 14 days
-    const response = await fetch("/api/v1/auth/stats", {
+    const response = await fetch("/api/v1/user/stats", {
         method: "GET",
         credentials: "include" 
     });

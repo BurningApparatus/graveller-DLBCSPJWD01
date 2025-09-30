@@ -2,11 +2,11 @@
 
 
 /**
- * Function which sends a request to /api/v1/auth/info to get user information
+ * Function which sends a request to /api/v1/user to get user information
  * to popuplate the header and account popup
  */
 async function getInfo() {
-    const response = await fetch("/api/v1/auth/info", {
+    const response = await fetch("/api/v1/user", {
         method: "GET",
         credentials: "include" 
     });
@@ -61,7 +61,7 @@ async function performLogout() {
 }
 
 /**
- * Perform account deletion using /auth/info DELETE request
+ * Perform account deletion using /api/v1/user DELETE request
  */
 async function performDeletion() {
 
@@ -70,7 +70,7 @@ async function performDeletion() {
 
     if (userConfirm) {
 
-        const response = await fetch("/api/v1/auth/info", {
+        const response = await fetch("/api/v1/user/", {
             method: "DELETE",
             credentials: "include" 
         });

@@ -1,5 +1,5 @@
 /**
- * Defines the routes for the path /api/v1/auth
+ * Defines the routes for the path /api/v1/user
  */
 
 import { registerUser, validateUserRegister, loginUser, logoutUser, getUserInfo, deleteUser, getUserStats} from '../controllers/userController'
@@ -8,11 +8,8 @@ import { Router } from 'express'
 
 const router = Router();
 
-router.post('/register', validateUserRegister, registerUser);
-router.post('/login', validateUserRegister, loginUser);
-router.post('/logout', logoutUser);
-router.delete('/info', deleteUser);
-router.get('/info', requireAuth, getUserInfo);
+router.delete('/', requireAuth, deleteUser);
+router.get('/', requireAuth, getUserInfo);
 router.get('/stats', requireAuth, getUserStats);
 //router.get('/list', listUsers);
 
