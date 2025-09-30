@@ -17,7 +17,7 @@
     background-color: var(--dark-blue);
 }
 .task-title {
-    font-family: Georgia, serif;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     font-size: 1.6em;
     border: none;
     background-color: inherit;

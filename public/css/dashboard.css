@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     color: var(--fg-primary);
 }
 html,body { 
@@ -28,7 +28,7 @@ main {
 
 h1, h2 {
     font-size: 1.7em;
-    font-family: Georgia, serif;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     margin: 0.7em;
 
 }
@@ -42,7 +42,7 @@ h1, h2 {
 }
 #balance {
     font-size: 1.7em;
-    font-family: Georgia, serif;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     margin: 0.7em;
 }
 

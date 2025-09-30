@@ -1,13 +1,12 @@
 
 body {
-    font-family: Arial, sans-serif;
     color: var(--fg-primary);
 }
 html,body { 
     height:100%; 
     margin: 0;
     background-color: var(--bg-primary);
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     color: var(--fg-primary);
 }
 
