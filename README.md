@@ -134,7 +134,7 @@ As a logged in user:
 As a logged in user:
 
 - Visit the dashboard (/dashboard)
-- On a completed task, click the green "refresh button" on the very right
+- On a completed task, click the "refresh button" on the very right
 
 **Expected Outcome:** The task is marked as uncompleted, brought to the top of the list and appears without a strikethrough, without affecting the user's balance.
 
@@ -144,7 +144,6 @@ As a logged in user:
 As a logged in user:
 
 - Visit the dashboard (/dashboard)
-- On a task, click the red "delete button" on the right
 
 **Expected Outcome:** The task is marked as deleted, and removed from the list. A notification should appear offering the chance to undo the action.
 
@@ -154,7 +153,7 @@ As a logged in user:
 As a logged in user:
 
 - Visit the dashboard (/dashboard)
-- On a task, click the red "delete button" on the right
+- On a task, click the delete button (button marked with X) on the right
 - On the popup, click the "Undo" button
 
 **Expected Outcome:** The task is initially deleted, but returns after the undo button is
@@ -207,7 +206,7 @@ As a logged in user:
 As a logged in user:
 
 - Visit the dashboard (/dashboard)
-- On a reward, click the red "delete button" on the right
+- On a task, click the delete button (button marked with X) on the right
 
 **Expected Outcome:** The reward is marked as deleted, and removed from the list. A notification should appear offering the chance to undo the action.
 
@@ -217,7 +216,7 @@ As a logged in user:
 As a logged in user:
 
 - Visit the dashboard (/dashboard)
-- On a reward, click the red "delete button" on the right
+- On a task, click the delete button (button marked with X) on the right
 - On the popup, click the "Undo" button
 
 **Expected Outcome:** The reward is initially deleted, but returns after the undo button is pressed.

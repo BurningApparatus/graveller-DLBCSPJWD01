@@ -4,8 +4,6 @@ const formatter = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
-    hour: "2-digit",
-    minute: "numeric"
 
 });
 
@@ -87,6 +85,9 @@ function createTaskHTML(task) {
     taskClickable.addEventListener("click", async () => {
         await toggleTask(task.taskID, task.completed);
         hydrateTasks();
+        // Defined in js/statsPreview.js
+        // Adds money if the task is completed, subtracts if uncompleted
+        addToday(task.completed ? -task.value : task.value);
     } );
 
     // Task deletion 

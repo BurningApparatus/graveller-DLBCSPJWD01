@@ -8,6 +8,7 @@
 }
 .reward-expensive {
     background-color: var(--fg-disable); 
+    color: var(--fg-primary);
 }
 .reward-click:hover {
     background-color: var(--blue);

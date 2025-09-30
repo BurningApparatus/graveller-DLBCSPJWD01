@@ -26,7 +26,7 @@
 .task-description {
     padding-top: 1em;
 
-    color: var(--fg-disable);
+    /*color: var(--fg-muted);*/
     font-size: 1.1em;
 }
 

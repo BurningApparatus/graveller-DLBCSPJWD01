@@ -145,6 +145,9 @@ async function completeReward(id) {
         // Balance is represented twice in the website
         balElement.innerHTML = "$" + clientBalance;
         accountBalance.textContent = "$" + clientBalance;
+        // Defined in js/statsPreview.js
+        // Updates the stats screen to reflect change in balance
+        addToday(-out.old_reward.value);
     }
     else {
 
