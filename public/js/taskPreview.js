@@ -127,8 +127,6 @@ async function toggleTask(id, completed) {
 
     // Whether or not the function should complete or uncomplete a task
     let end = completed ? "uncomplete" : "complete"
-    console.log(completed);
-    console.log(end);
 
     // Since the API only has /complete and /uncomplete, we dynamically
     // change which endpoint we request to get toggle functionality

@@ -77,7 +77,6 @@ async function performDeletion() {
 
         if (response.ok) {
             const user = await response.json();
-            console.log("Deletion success");
             // Reloading should redirect to login page
             // as deleting also logs the user out
             window.location.reload();
