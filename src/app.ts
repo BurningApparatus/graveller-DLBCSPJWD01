@@ -6,11 +6,14 @@ import 'dotenv/config'
 import userRoutes from './routes/userRoutes'
 import taskRoutes from './routes/taskRoutes'
 import rewardRoutes from './routes/rewardRoutes'
+import frontendRoutes from './routes/frontendRoutes'
 
 import { userTable, taskTable, rewardTable, transactionTable, db } from './db/sqlite3/db'
 import { User } from './models/userModel'
 
 import session from 'express-session'
+
+import path from 'path';
 
 // Tell 'express-session' to store user data in the cookie itself
 declare module "express-session" {
@@ -20,7 +23,6 @@ declare module "express-session" {
 }
 import { BetterSQliteSessionStore } from './db/sqlite3/sessionStore'
 
-import path from 'path'
 
 // Initialize database tables if they don't already exist
 userTable.migrate();
@@ -42,13 +44,15 @@ app.use(session({
 }));
 
 
-// Serve frontend pages statically
+// Serve frontend resources statically
 app.use(express.static(path.join(__dirname, "../public")));
+
 
 // Use all routers
 app.use('/api/v1/auth', userRoutes);
 app.use('/api/v1/tasks', taskRoutes);
 app.use('/api/v1/rewards', rewardRoutes);
+app.use('/', frontendRoutes);
 
 export default app;
 

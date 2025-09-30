@@ -18,7 +18,7 @@ async function getInfo() {
         return user;
     } else {
         // If we aren't logged in, redirect to login screen
-        window.location.href = "/login.html";
+        window.location.href = "/login";
         return null;
     }
 }

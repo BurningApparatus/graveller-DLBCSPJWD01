@@ -31,7 +31,7 @@ form.addEventListener('submit', async (e) => {
 
     if (result.success) {
         // If successful, we should be ok to go to the dasboard
-        window.location.href = "/dashboard.html";
+        window.location.href = "/dashboard";
     }
     else {
         errorMessage.textContent = result.message || "Failed to Login";
