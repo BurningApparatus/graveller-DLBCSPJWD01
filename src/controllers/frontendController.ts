@@ -6,7 +6,7 @@ import { Request, Response } from "express"
 
 import path from 'path'
 
-const root = path.join(__dirname, '../views')
+const root = path.join(__dirname, '../../views')
 
 export async function landingPage(req: Request, res: Response) {
     res.sendFile(path.join(root, "index.html"));
