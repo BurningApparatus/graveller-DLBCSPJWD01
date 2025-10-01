@@ -1,5 +1,7 @@
 # Graveller
 
+![graveller-dashboard](https://github.com/BurningApparatus/graveller-DLBCSPJWD01/blob/master/screenshots/dashboard_light.png?raw=true)
+
 ## Introduction 
 
 This is a project built for IU's Project: Java and Web Development (DLBCSPJWD01) course. It is a gameified productivity app meant to motivate completion of tasks by rewarding in-app currency, which may then be used to redeem rewards (All user defined!).
