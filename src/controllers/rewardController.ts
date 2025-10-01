@@ -113,7 +113,6 @@ export async function getRewards(req: Request, res: Response) {
     let user = req.session.user;
     try {
         let rewards = await rewardTable.getRewardsForUser(user?.userID || -1);
-        console.log(rewards);
         res.json({success: "true", rewards: rewards});
     }
     catch (err){

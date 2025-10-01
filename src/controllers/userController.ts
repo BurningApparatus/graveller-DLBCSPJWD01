@@ -84,7 +84,6 @@ export async function loginUser(req: Request, res: Response) {
         if (result) {
             // successful login, save the session in a cookie
             req.session.user = user;
-            console.log(req.session);
 
             req.session.save(err => {
                 if (err) console.error(err)
@@ -111,7 +110,6 @@ export async function deleteUser(req: Request, res: Response) {
 
     let user = req.session.user;
 
-    console.log(req.session);
     if (user) {
         // Deletes the user
         userTable.deleteUser(user.userID);
@@ -194,7 +192,7 @@ export async function getUserStats(req: Request, res: Response) {
                         error: `Database error ${err.code}: ${err.message}` }
                     );
                 }
-                console.log(err);
+                error(err);
                 return res.status(500).json({ 
                     error: `Internal Server error` }
                 );

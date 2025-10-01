@@ -7,7 +7,7 @@ import { Request, Response } from "express"
 export function requireAuth(req: Request, res: Response, next: Function) {
 
     let user = req.session.user;
-    console.log(req.session);
+    //console.log(req.session);
     if (!user) {
         return res.status(401).json({ error: `You are not logged in.` });
     }
