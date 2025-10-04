@@ -63,7 +63,7 @@ export class SQLiteRewardTable {
                 value INTEGER NOT NULL,
                 deleted INTEGER NOT NULL,
                 FOREIGN KEY (userID)
-                REFERENCES users (userID)
+                REFERENCES users (userID) ON DELETE CASCADE
             );`
         );
         statement.run();
