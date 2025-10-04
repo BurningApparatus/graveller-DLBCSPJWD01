@@ -25,15 +25,15 @@ async function hydrateDailyEarnings() {
         // Reset the state of the bar data
         bar_data_state.fill(0);
         
+        
         // For each date which appears in the body, we set the corresponding
         // value in the bar chart to that value.
         stats.forEach((stat) => {
             let stat_date = new Date(stat.date);
             // We convert the date into the corresponding array index
-            let days_between = Math.round((today - stat_date) / one_day);
+            let days_between = Math.floor((today - stat_date) / one_day);
             let index = 13 - days_between;
             bar_data_state[index] = stat.total;
-            //console.log(`${stat_date} - ${index}`); 
         })
 
         // We update the chart to reflect the new state
@@ -56,7 +56,6 @@ function generateChart(bar_data) {
     let today = Date.now();
     // Get max element of array
     let max = Math.max.apply(Math, bar_data);
-    console.log(bar_data);
     for (let i = 0; i < 14; i++) {
         // The corresponding date
         let date = new Date(today - one_day * (13 - i));
