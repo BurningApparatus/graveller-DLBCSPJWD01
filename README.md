@@ -36,4 +36,4 @@ Requires nodejs 18 or higher.
 
 ## Credit
 
-The colours for the light and dark modes are taken from the [Rosepine Theme](rosepinetheme.com). 
+The colours for the light and dark modes are taken from the [Rosepine Theme](https://www.rosepinetheme.com). 
