@@ -247,6 +247,28 @@ long-input:hover {
     color: var(--white);
 }
 
+.form-button {
+    width: 100%;
+    height: 2em;
+    height: 5vh;
+    font-size: 3vh;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+#logout-button, #delete-button {
+
+    font-size: inherit;
+}
+
+
+.panel-header {
+    display: flex;
+}
+.new-task-button-mini {
+    width: 50%;
+    margin-left: auto;
+}
+
 @media (min-height: 800px) {
     .new-task-button-mini {
         display: none;
@@ -269,6 +291,10 @@ long-input:hover {
     }
 }
 @media (max-width: 768px) {
+
+    #taskForm, #rewardForm, #account-display {
+        width: 80vw;
+    }
     .task-preview {
         width: 100%;
         max-width: 100%;

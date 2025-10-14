@@ -39,7 +39,7 @@
             
             <section class="content-primary">
                 <article class="task-preview rounded" id="task-preview">
-                    <h2> Tasks 
+                    <h2 class="panel-header"> Tasks 
                     <button id="task-popup-button" class="new-task-button-mini dot-button" onclick="activate_popup('task-popup')"> + </button>
 </h2>
                     <ul id="tasklist" class="button-list"> </ul>
@@ -52,7 +52,7 @@
                         <div class="bar-chart" id="daily-earnings-chart"></div>
                     </div>
                     <div class="rewards rounded" id="reward-tab">
-                        <h2> Rewards 
+                        <h2 class="panel-header"> Rewards 
 
                     <button id="reward-popup-button" class="new-task-button-mini dot-button" onclick="activate_popup('reward-popup')"> + </button>
                         </h2>
@@ -86,7 +86,7 @@
                     <input required type="date" id="taskdue" name="taskdue"><br><br>
 
                     <p id="taskerror" class="error-message"></p>
-                    <button type="submit" class="dot-button">Create</button>
+                    <button type="submit" class="dot-button form-button"> + </button>
                 </form>
         </div>
         <div class="popup" id="account-popup">
@@ -94,8 +94,8 @@
                 <p id="account-name"> User: username </p>
                 <p id="account-balance"> Balance: Balance </p>
 
-                <button id="logout-button" class="dot-button" onclick="performLogout()"> Logout </button> <br>
-                <button id="delete-button" class="dot-button" onclick="performDeletion()"> Delete my account </button>
+                <button id="logout-button" class="dot-button form-button" onclick="performLogout()"> Logout </button> <br>
+                <button id="delete-button" class="dot-button form-button" onclick="performDeletion()"> Delete my account </button>
             </div>
         </div>
 
@@ -110,7 +110,7 @@
                     <input required class="textinput dark-input" type="text" inputmode="numeric" id="rewardvalue" name="rewardvalue"><br><br>
 
                     <p id="rewarderror" class="error-message"></p>
-                    <button type="submit" class="dot-button dark-button" >Create</button>
+                    <button type="submit" class="dot-button dark-button form-button" > + </button>
                 </form>
         </div>
 
