@@ -46,7 +46,7 @@ app.use(session({
 
 
 // Serve frontend resources statically
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "./public")));
 
 
 // Use all routers
